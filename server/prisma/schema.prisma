@@ -13,8 +13,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+// model User {
+//   id    Int    @id @default(autoincrement())
+//   name  String
+//   email String @unique
+// }
+
+model Player {
+  player_id String @id @unique
+  name      String
+}
+
+model TeamPokemon {
+  player_id  String
+  index      Int
+  pokemon_id Int
+  level      Int
+  exp        Int
+  move_list  Int[]
+
+  @@id([player_id, index])
+}
+
+model Pokemon {
+  pokemon_id           Int    @id @unique
+  name                 String @unique
+  type1                String
+  type2                String
+  front_image          String
+  back_image           String
+  base_hp              Int
+  base_attack          Int
+  base_defence         Int
+  base_special_attack  Int
+  base_special_defence Int
+  base_speed           Int
+  evolve_level         Int
+  move_list            Int[]
+}
+
+model Move {
+  move_id        Int      @id @unique
+  category       String
+  name           String
+  type           String
+  damage_class   String
+  power          Int
+  pp             Int
+  accuracy       Int
+  priority       Int
+  stat_name    String[]
+  stat_rank    Int[]
+  stat_target  String
+  stat_chance  Int
+  ailment   String
+  ailment_chance Int
+  healing Int
+  drain    Int
+  description    String
 }
