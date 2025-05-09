@@ -305,6 +305,7 @@ npx prisma studio
 - ホスト側の`node_modules`は削除し、`.dockerignore`に必ず追加
 - Prisma Studioやマイグレーションは**サーバーコンテナ内で実行**
 - Next.jsの環境変数は`NEXT_PUBLIC_`で始める
+- Prisma studio起動用のPORT:5555を開放
 
 ---
 
