@@ -1,0 +1,20 @@
+export type Move = {
+    move_id: number;
+    category: string;
+    name: string;
+    type: string;
+    damage_class: string;
+    power: number;
+    pp: number;
+    accuracy: number;
+    priority: number;
+    stat_name: string[];
+    stat_rank: number[];
+    stat_target: string;
+    stat_chance: number;
+    ailment: string;
+    ailment_chance: number;
+    healing: number;
+    drain: number;
+    description: string;
+}
