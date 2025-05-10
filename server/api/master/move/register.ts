@@ -42,11 +42,6 @@ async function store_move_info_from_api() {
         }
     }
 
-    // const allMove = await prisma.move.findMany({
-    //     orderBy:{ move_id:'asc' }
-    //   });
-
-    // console.log(JSON.stringify(allPokemon,null,2)); 
 }
 
 // サーバでしか動かさないためメイン関数を用意
