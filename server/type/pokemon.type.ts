@@ -13,4 +13,4 @@ export type Pokemon = {
     base_speed: number;
     evolve_level: number;
     move_list: number[];
-}
+} | null;

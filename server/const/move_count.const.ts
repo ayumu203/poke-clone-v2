@@ -1,0 +1,1 @@
+export const MAX_MOVE_COUNT = 4;

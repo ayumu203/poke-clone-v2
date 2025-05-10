@@ -14,10 +14,10 @@ async function store_pokemon_info_from_api(){
   const del = await prisma.pokemon.deleteMany();
   let begin = POKEMON_ID_BEGIN;
   let end = POKEMON_ID_END;
-//   for(let i = begin; i <= end; i++){
-for(let i = 1; i <= 10; i++){
+  for(let i = begin; i <= end; i++){
+// for(let i = 1; i <= 10; i++){
     const pokemon:Pokemon = await fetchPokemonInfo(i);
-    console.dir(pokemon);
+    // console.dir(pokemon);
     const name:string = await fetchPokemonName(i);
     let evolve_level:number = await fetchPokemonEvolveLevel(i);
     if(pokemon?.pokemon_id === 550 || pokemon?.pokemon_id === 625)evolve_level = -1;
