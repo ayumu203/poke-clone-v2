@@ -1,9 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+import { Player } from './type/player.type';
+import { getPlayer } from './api/player/getPlayer';
+import { isPlayer } from './api/player/existPlayer';
+import { register } from 'module';
+import { registerPlayer } from './api/player/registerPlayer';
 
 const app = express();
-const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
@@ -14,15 +17,31 @@ app.get('/', (req, res) => {
   res.json({ message: 'APIサーバーが稼働中です' });
 });
 
-// ユーザー一覧取得例
-// app.get('/users', async (req, res) => {
-//   try {
-//     const users = await prisma.user.findMany();
-//     res.json(users);
-//   } catch (err) {
-//     res.status(500).json({ error: 'ユーザー取得に失敗しました' });
-//   }
-// });
+app.post('/player', async (req,res) => {
+  const player_id:string = req.body.player_id;
+  const exist:Boolean = await isPlayer(player_id);
+
+  if(exist){
+    const player:Player = await getPlayer(player_id);
+    res.status(200).json(player);
+  }
+  else {
+    res.status(404).json(null);
+  }
+});
+
+app.post('/player/register', async (req,res) =>{
+  const player_id:string = req.body.player_id;
+  const name:string = "トレーナー君";
+  const exist:Boolean = await isPlayer(player_id);
+  if(!exist){
+    await registerPlayer(player_id,name);
+    res.status(200).json({message:"登録完了"});
+  }
+  else {
+    res.status(400).json({message:"登録済み"});
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`サーバーがポート${PORT}で起動しました`);
