@@ -9,7 +9,6 @@ export default function Main() {
     useEffect(()=>{
         if(user){
             const data =  fetch_first_pokemon();
-            const pokemons:Pokemon[] = [];
             console.log(data);
         }
     },[user]);

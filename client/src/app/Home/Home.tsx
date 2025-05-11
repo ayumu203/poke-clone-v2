@@ -1,7 +1,6 @@
 import React from 'react'
 import { supabase } from '../../../lib/supabase/supabase';
 import { useRouter } from 'next/navigation';
-import { usePlayer } from '../../../context/playerContext';
 
 export default function Main() {
     const router = useRouter();

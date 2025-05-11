@@ -1,9 +1,9 @@
 "use client"
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import { useRouter } from "next/navigation";
-import { usePlayer } from "../../../context/playerContext";
-import { useUser } from "../../../context/userContext";
+// import { useRouter } from "next/navigation";
+// import { usePlayer } from "../../../context/playerContext";
+// import { useUser } from "../../../context/userContext";
 import Main from "./Main";
 
 export default function Home() {
