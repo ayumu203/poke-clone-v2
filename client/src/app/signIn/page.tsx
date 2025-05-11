@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { supabase } from "../../../lib/supabase/supabase";
 import { useUser } from "../../../context/userContext";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
 export default function SignInPage() {
   const { user } = useUser();
@@ -19,8 +21,7 @@ export default function SignInPage() {
 
   return (
     <div className="">
-      <div className="justify-items-center mt-10 mb-8">
-      </div>
+      <Header />
       <div className="flex justify-center">
         <Auth
           supabaseClient={supabase}
@@ -29,6 +30,7 @@ export default function SignInPage() {
           onlyThirdPartyProviders
         />
       </div>
+      <Footer />
     </div>
   );
 }
