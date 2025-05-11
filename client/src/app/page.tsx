@@ -9,7 +9,6 @@ import Main from "./Home/Home";
 
 export default function Home() {
   const { user } = useUser();
-  const { player } = usePlayer();
   const router = useRouter();
 
   useEffect(() => {
