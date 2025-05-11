@@ -72,17 +72,22 @@ app.post('/first-pokemon/register', async (req, res) => {
   const player_exist: Boolean = await isPlayer(player_id);
   const pokemon_exist: Boolean = await isTeamPokemon(player_id, 0);
 
+  
   if (!player_exist) {
     res.status(404).json({ message: "プレイヤーが登録されていません" });
     return;
   }
+  
+  // res.status(200).json({ pokemon_exist });
   if (!pokemon_exist) {
     if (pokemon_id === 494 || pokemon_id === 495 || pokemon_id === 501) {
       await registerTeamPokemon(player_id, pokemon_id, index);
       res.status(200).json({ message: "初期ポケモン登録完了" });
     }
   }
-  res.status(400).json({ message: "初期ポケモン登録失敗" });
+  else {
+    res.status(200).json({ message: "初期ポケモン登録済み" });
+  }
 });
 
 // 手持ちのポケモンをplayer_id,index(配置位置)で取得するAPI
