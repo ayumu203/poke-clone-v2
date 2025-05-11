@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'APIサーバーが稼働中です' });
 });
 
-// playerのデータを参照するAPI
+// playerのデータを参照・データが存在しない場合は登録まで行うAPI
 app.post('/player', async (req, res) => {
   const player_id: string = req.body.player_id;
   const exist: Boolean = await isPlayer(player_id);
@@ -32,21 +32,25 @@ app.post('/player', async (req, res) => {
     res.status(200).json(player);
   }
   else {
-    res.status(404).json(null);
+    const player_id: string = req.body.player_id;
+    const name: string = "トレーナー君";
+    await registerPlayer(player_id, name);
+    const player:Player = await getPlayer(player_id);
+    res.status(200).json({ player:player });
   }
 });
 
 // playerのデータを登録するAPI
 app.post('/player/register', async (req, res) => {
   const player_id: string = req.body.player_id;
-  const name: string = "トレーナー君";
+  const name: string = req.body.name;
   const exist: Boolean = await isPlayer(player_id);
   if (!exist) {
     await registerPlayer(player_id, name);
     res.status(200).json({ message: "登録完了" });
   }
   else {
-    res.status(400).json({ message: "登録済み" });
+    res.status(400).json({ message: "登録に失敗" });
   }
 });
 
@@ -73,7 +77,7 @@ app.post('/first-pokemon/register', async (req, res) => {
     return;
   }
   if (!pokemon_exist) {
-    if(pokemon_id === 494 || pokemon_id === 495 || pokemon_id === 501){
+    if (pokemon_id === 494 || pokemon_id === 495 || pokemon_id === 501) {
       await registerTeamPokemon(player_id, pokemon_id, index);
       res.status(200).json({ message: "初期ポケモン登録完了" });
     }
