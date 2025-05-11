@@ -4,7 +4,6 @@ import { supabase } from '../../../lib/supabase/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function Main() {
-    const { player } = usePlayer();
     const router = useRouter();
 
     const handleSignOut = async () => {

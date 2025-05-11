@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useUser } from "../../context/userContext";
 import { useRouter } from "next/navigation";
-import { usePlayer } from "../../context/playerContext";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Main from "./Home/Home";
