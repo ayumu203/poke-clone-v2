@@ -13,7 +13,7 @@ const fetchStat = async (url: string, headers: HeadersInit,pokemon_id:number): P
     for(let i = 0; i < data.moves.length; i++){
         const move_id = data.moves[i].move.url.replace(/\/+$/, "");
         const id = move_id.split("/").pop();
-        move_list.push(Number(id));
+        if(Number(id) <= 559)move_list.push(Number(id));
     }
     const pokemon:Pokemon = {
         pokemon_id:pokemon_id,
