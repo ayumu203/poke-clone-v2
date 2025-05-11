@@ -1,5 +1,4 @@
 "use client"
-import { useEffect } from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { useRouter } from "next/navigation";
@@ -8,9 +7,9 @@ import { useUser } from "../../../context/userContext";
 import Main from "./Main";
 
 export default function Home() {
-    const { user } = useUser();
-    const { player } = usePlayer();
-    const router = useRouter();
+    // const { user } = useUser();
+    // const { player } = usePlayer();
+    // const router = useRouter();
 
     // useEffect(() => {
     //     if (!user) {

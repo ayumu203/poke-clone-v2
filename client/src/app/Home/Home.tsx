@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { usePlayer } from '../../../context/playerContext';
 
 export default function Main() {
-    const { player } = usePlayer();
     const router = useRouter();
 
     const handleSignOut = async () => {
