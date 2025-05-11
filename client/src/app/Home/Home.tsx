@@ -1,14 +1,15 @@
 import React from 'react'
 import { supabase } from '../../../lib/supabase/supabase';
 import { useRouter } from 'next/navigation';
+import { usePlayer } from '../../../context/playerContext';
 
 export default function Main() {
+    const { player } = usePlayer();
     const router = useRouter();
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
         router.push("/signIn");
-
     }
 
     return (
