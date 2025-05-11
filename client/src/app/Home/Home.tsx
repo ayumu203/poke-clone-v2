@@ -1,5 +1,4 @@
 import React from 'react'
-import { usePlayer } from '../../../context/playerContext';
 import { supabase } from '../../../lib/supabase/supabase';
 import { useRouter } from 'next/navigation';
 
