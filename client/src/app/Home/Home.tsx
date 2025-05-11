@@ -13,9 +13,6 @@ export default function Main() {
 
     return (
         <div className="bg-[url(/001_home.png)] flex-1">
-            {/* {player?.player_id} <br />
-            {player?.name} <br /> */}
-            {/* <button onClick={handleSignOut}>サインアウト</button> */}
             <button
                 onClick={handleSignOut}
                 className="h-[8vh] bg-black opacity-30 text-white text-[30px]">
