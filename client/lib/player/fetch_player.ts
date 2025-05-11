@@ -1,5 +1,5 @@
 export const fetch_player = async(player_id:string) =>{
-    const base_url = "";
+    // const base_url = "";
     // const url = `https://poke-clone-server-118138030176.us-central1.run.app/player`;
     const url = `http://localhost:3001/player`;
     try {
