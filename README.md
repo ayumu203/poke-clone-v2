@@ -24,6 +24,18 @@ NODE_ENV=development
 PORT=3001
 ```
 
+## 実行方法
+```
+docker compose up --build
+```
+
+## 初期データの読み込み
+```
+docker exec -it poke-clone-server sh
+npx ts-node api/master/pokemon/register.ts
+npx ts-node api/master/move/register.ts
+```
+
 ## 注意
 * 現在はSupabaseのリダイレクト先をlocalhostにしてあるためログイン処理移行進まないようになってます.
 * 一応設定変えれば動くのも確認してるよ.
