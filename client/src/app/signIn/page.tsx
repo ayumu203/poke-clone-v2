@@ -8,13 +8,15 @@ import { supabase } from "../../../lib/supabase/supabase";
 import { useUser } from "../../../context/userContext";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import { usePlayer } from "../../../context/playerContext";
 
 export default function SignInPage() {
   const { user } = useUser();
+  const { player } = usePlayer();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
+    if (user && player) {
       router.push("/");
     }
   }, [user]);
