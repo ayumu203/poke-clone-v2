@@ -4,7 +4,7 @@ import { useUser } from "../../context/userContext";
 import { useRouter } from "next/navigation";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
-import Main from "./Home/Home";
+import Main from "./Home/Main";
 
 export default function Home() {
   const { user } = useUser();

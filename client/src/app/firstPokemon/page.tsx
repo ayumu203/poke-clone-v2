@@ -1,22 +1,9 @@
 "use client"
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-// import { useRouter } from "next/navigation";
-// import { usePlayer } from "../../../context/playerContext";
-// import { useUser } from "../../../context/userContext";
 import Main from "./Main";
 
-export default function Home() {
-    // const { user } = useUser();
-    // const { player } = usePlayer();
-    // const router = useRouter();
-
-    // useEffect(() => {
-    //     if (!user) {
-    //         router.push("/signIn");
-    //     }
-    // }, [])
-    
+export default function Home() {    
     return (
         <>
             <div className="min-h-screen flex flex-col">
