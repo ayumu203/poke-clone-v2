@@ -4,31 +4,65 @@ import { fetch_first_pokemon } from '../../../lib/first_pokemon.ts/fetch_first_p
 import { usePlayer } from '../../../context/playerContext';
 import { Pokemon } from '../../../type/pokemon.type';
 import PokemonInfo from './pokemonInfo/PokemonInfo';
+import { register_first_pokemon } from '../../../lib/first_pokemon.ts/register_first_pokemon';
+import { is_first_pokemon } from '../../../lib/first_pokemon.ts/is_first_pokemon';
+import { useRouter } from 'next/navigation';
 
 export default function Main() {
     const { user } = useUser();
     const { player } = usePlayer();
-    const [ pokemons, setPokemons ] = useState<Pokemon[]>([]);
+    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [exist, setExist] = useState<boolean>(false);
+    const [selectId, setSelectId] = useState<number>(-1);
+    const [isSubmitted, setIssubmitted] = useState<boolean>(false);
+    const router = useRouter();
+
+    function handleSelect(id: number): void {
+        setSelectId(id);
+    }
+
+    useEffect(() => {
+        const handleExist = async () => {
+            const ex = await is_first_pokemon(player!.player_id);
+            if(!ex)setExist(false);
+            else setExist(true);
+        }
+        const handleFetchFirstPokemon = async (): Promise<void> => {
+            const data = await fetch_first_pokemon();
+            setPokemons(data);
+        }
+
+        if (user && player) {
+            handleExist();
+            if(exist)router.push("/");
+            else handleFetchFirstPokemon();
+        }
+    }, [user, player]);
 
     useEffect(()=>{
-        if(user && player){
-            const handleFetchFirstPokemon = async():Promise<void> => {
-                const data = await fetch_first_pokemon();
-                setPokemons(data);
-            }
-            handleFetchFirstPokemon();
-        }
-    },[user,player]);
+        if(isSubmitted)router.push("/");
+    },[isSubmitted]);
+
 
     return (
         <div className="bg-[url(/002_firstPokemon.png)] flex-1 text-white p-4">
             {pokemons.length < 3 && <>データの取得中</>}
             {pokemons.length >= 3 && <>
-                {pokemons.map((pokemon,index) => {
-                    return(<div className='flex flex-row justify-center items-center gap-6 flex-wrap'><PokemonInfo key={index} pokemon={pokemon} /></div>)
+                {selectId}
+                {pokemons.map((pokemon, index) => {
+                    return (<div className='flex flex-row justify-center items-center gap-6 flex-wrap'><PokemonInfo key={index} pokemon={pokemon} onSelect={handleSelect} /></div>)
                 })}
+                {
+                    !isSubmitted &&
+                    <>
+                        <div className="flex justify-center mt-4">
+                            <button onClick={async () => { register_first_pokemon(player!.player_id, selectId); setIssubmitted(true) }} className="bg-blue-500 hover:bg-grean-900 text-white font-bold py-2 px-4 rounded">
+                                決定
+                            </button>
+                        </div>
+                    </>
+                }
             </>}
-
         </div>
     )
 }

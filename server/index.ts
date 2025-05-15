@@ -77,16 +77,17 @@ app.post('/first-pokemon/register', async (req, res) => {
     res.status(404).json({ message: "プレイヤーが登録されていません" });
     return;
   }
+
+  if(pokemon_exist){
+    res.status(200).json({ exist: true });
+  }
   
   // res.status(200).json({ pokemon_exist });
   if (!pokemon_exist) {
     if (pokemon_id === 494 || pokemon_id === 495 || pokemon_id === 501) {
       await registerTeamPokemon(player_id, pokemon_id, index);
-      res.status(200).json({ message: "初期ポケモン登録完了" });
+      res.status(200).json({ exist: false });
     }
-  }
-  else {
-    res.status(200).json({ message: "初期ポケモン登録済み" });
   }
 });
 
