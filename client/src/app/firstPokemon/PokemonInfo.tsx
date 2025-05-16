@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Pokemon } from "../../../../type/pokemon.type";
+import { Pokemon } from "../../../type/pokemon.type";
 
 type Prop = {
     pokemon:Pokemon;
