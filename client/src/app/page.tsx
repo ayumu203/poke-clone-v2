@@ -4,7 +4,7 @@ import { useUser } from "../../context/userContext";
 import { useRouter } from "next/navigation";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
-import Main from "./Home/Main";
+import Main from "./Main/Main";
 import { usePlayer } from "../../context/playerContext";
 
 export default function Home() {

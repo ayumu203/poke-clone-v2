@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useUser } from '../../../context/userContext';
-import { fetch_first_pokemon } from '../../../lib/first_pokemon.ts/fetch_first_pokemon';
+import { fetch_first_pokemon } from '../../../lib/first_pokemon/fetch_first_pokemon';
 import { usePlayer } from '../../../context/playerContext';
 import { Pokemon } from '../../../type/pokemon.type';
 import PokemonInfo from './PokemonInfo';
-import { register_first_pokemon } from '../../../lib/first_pokemon.ts/register_first_pokemon';
-import { is_first_pokemon } from '../../../lib/first_pokemon.ts/is_first_pokemon';
+import { register_first_pokemon } from '../../../lib/first_pokemon/register_first_pokemon';
+import { is_first_pokemon } from '../../../lib/first_pokemon/is_first_pokemon';
 import { useRouter } from 'next/navigation';
 
 export default function Main() {

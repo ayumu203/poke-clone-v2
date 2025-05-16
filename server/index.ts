@@ -35,8 +35,8 @@ app.post('/player', async (req, res) => {
     const player_id: string = req.body.player_id;
     const name: string = "トレーナー君";
     await registerPlayer(player_id, name);
-    const player:Player = await getPlayer(player_id);
-    res.status(200).json({ player:player });
+    const player: Player = await getPlayer(player_id);
+    res.status(200).json({ player: player });
   }
 });
 
@@ -72,16 +72,16 @@ app.post('/first-pokemon/register', async (req, res) => {
   const player_exist: Boolean = await isPlayer(player_id);
   const pokemon_exist: Boolean = await isTeamPokemon(player_id, 0);
 
-  
+
   if (!player_exist) {
     res.status(404).json({ message: "プレイヤーが登録されていません" });
     return;
   }
 
-  if(pokemon_exist){
+  if (pokemon_exist) {
     res.status(200).json({ exist: true });
   }
-  
+
   // res.status(200).json({ pokemon_exist });
   if (!pokemon_exist) {
     if (pokemon_id === 494 || pokemon_id === 495 || pokemon_id === 501) {
@@ -101,9 +101,27 @@ app.post('/team-pokemon', async (req, res) => {
     res.status(200).json(teamPokemon);
   }
   else {
-    res.status(404).json(null);
+    res.status(200).json(null);
   }
 });
+
+app.post('/team-pokemon/register', async (req, res) => {
+  const player_id: string = req.body.player_id;
+  const pokemon_id: number = req.body.pokemon_id;
+  const index: number = req.body.index;
+  const player_exist: Boolean = await isPlayer(player_id);
+
+  if (!player_exist) {
+    res.status(404).json({ message: "プレイヤーが登録されていません" });
+    return;
+  }
+
+  if (pokemon_id >= 494 && pokemon_id <= 650) {
+    await registerTeamPokemon(player_id, pokemon_id, index);
+    res.status(200).json({ exist: false });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`サーバーがポート${PORT}で起動しました`);

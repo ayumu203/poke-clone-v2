@@ -19,7 +19,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (user && player) {
-      router.push("/firstPokemon");
+      router.push("/FirstPokemon");
     }
   }, [user,player]);
 
