@@ -15,10 +15,11 @@ export const PlayerProvider = ({children}:{children:ReactNode}) =>{
 
     useEffect(()=>{
         const fetchPlayer = async() => {
-            if(user && !player){
+            if(user){
                 const data = await fetch_player(user.id);
-                setPlayer({ player_id:data.player_id , name:data.name });
-                console.log(data);
+                if(data) {
+                    setPlayer({ player_id: data.player_id, name: data.name });
+                }
             }
         };
         fetchPlayer();

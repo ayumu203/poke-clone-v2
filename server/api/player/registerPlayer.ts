@@ -4,7 +4,7 @@ import { isPlayer } from "./isPlayer";
 
 const prisma = new PrismaClient();
 
-export async function registerPlayer(player_id:string,name:string):Promise<void> {
+export async function registerPlayer(player_id:string,name:string):Promise<Player> {
     const exist:Boolean = await isPlayer(player_id);
     if(!exist){
         await prisma.player.create({data: {
@@ -12,5 +12,6 @@ export async function registerPlayer(player_id:string,name:string):Promise<void>
             name:name
         }})
     }
-    return ;
+    const player:Player = await prisma.player.findFirst({where: {player_id} });
+    return player;
 }
