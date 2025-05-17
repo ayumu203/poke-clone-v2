@@ -9,7 +9,6 @@ import { useUser } from "../../../context/userContext";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { usePlayer } from "../../../context/playerContext";
-import { log } from "console";
 
 export default function SignInPage() {
   const { user } = useUser();

@@ -1,4 +1,6 @@
-export const fetch_team_pokemon = async (player_id:string,index:number) => {
+import { TeamPokemon } from "../../type/teamPokemon.type";
+
+export const fetch_team_pokemon = async (player_id:string,index:number):Promise<TeamPokemon> => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
     console.log(base_url);
     const url = `${base_url}/team-pokemon`;
@@ -16,7 +18,7 @@ export const fetch_team_pokemon = async (player_id:string,index:number) => {
         if (!response.ok) {
             throw new Error('response error');
         }
-        const data = await response.json();
+        const data:TeamPokemon = await response.json();
         return data;
     } catch (error) {
         console.error(error);

@@ -1,4 +1,4 @@
-export const is_first_pokemon = async (player_id:string) => {
+export const is_first_pokemon = async (player_id:string):Promise<boolean> => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
     console.log(base_url);
     const url = `${base_url}/team-pokemon`;
@@ -18,7 +18,8 @@ export const is_first_pokemon = async (player_id:string) => {
             throw new Error('response error');
         }
         const data = await response.json();
-        return data;
+        if(!data)return false;
+        else return true;
     } catch (error) {
         console.error(error);
         throw error;

@@ -10,6 +10,8 @@ import { getPokemon } from './api/pokemon/pokemon';
 import { isTeamPokemon } from './api/teamPokemon/isTeamPokemon';
 import { registerTeamPokemon } from './api/teamPokemon/resisterFirstPokemon';
 import { getTeamPokemon } from './api/teamPokemon/getTeamPokemon';
+import { deleteALLTeamPokemon } from './api/teamPokemon/deleteAll';
+import { deleteALLPlayer } from './api/player/deleteAll';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -110,6 +112,12 @@ app.post('/team-pokemon/register', async (req, res) => {
   }
 });
 
+
+app.post('/delete', async (req, res) => {
+  await deleteALLTeamPokemon();
+  await deleteALLPlayer();
+  res.status(200).json("削除に成功");
+});
 
 app.listen(PORT, () => {
   console.log(`サーバーがポート${PORT}で起動しました`);

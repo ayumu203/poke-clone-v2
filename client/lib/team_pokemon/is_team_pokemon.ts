@@ -1,4 +1,4 @@
-export const fetch_team_pokemon = async (player_id:string,index:number) => {
+export const is_team_pokemon = async (player_id:string,index:number):Promise<boolean> => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
     console.log(base_url);
     const url = `${base_url}/team-pokemon`;
@@ -17,9 +17,8 @@ export const fetch_team_pokemon = async (player_id:string,index:number) => {
             throw new Error('response error');
         }
         const data = await response.json();
-        let result = false;
-        if(data !== null)result = true;
-        return result;
+        if(!data)return false;
+        else return true;
     } catch (error) {
         console.error(error);
         throw error;

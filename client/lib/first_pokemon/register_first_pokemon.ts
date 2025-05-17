@@ -1,4 +1,6 @@
-export const register_first_pokemon = async(player_id:string, pokemon_id:number) =>{
+import { Pokemon } from "../../type/pokemon.type";
+
+export const register_first_pokemon = async(player_id:string, pokemon_id:number):Promise<Pokemon> =>{
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
     console.log(base_url);
     const url = `${base_url}/first-pokemon/register`;
@@ -16,7 +18,7 @@ export const register_first_pokemon = async(player_id:string, pokemon_id:number)
         if (!response.ok) {
             throw new Error('response error');
         }
-        const data = await response.json();
+        const data:Pokemon = await response.json();
         return data;
     } catch(error){
         console.error(error);
