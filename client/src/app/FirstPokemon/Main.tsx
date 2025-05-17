@@ -6,9 +6,10 @@ import { Pokemon } from '../../../type/pokemon.type';
 import { register_first_pokemon } from '../../../lib/first_pokemon/register_first_pokemon';
 import { is_first_pokemon } from '../../../lib/first_pokemon/is_first_pokemon';
 import { useRouter } from 'next/navigation';
-import PokemonInfo from './optionPokemon';
 import { TeamPokemon } from '../../../type/teamPokemon.type';
 import { fetch_team_pokemon } from '../../../lib/team_pokemon/fetch_team_pokemon';
+import PokemonImage from './pokemonImage';
+import PokemonName from './pokemonName';
 
 export default function Main() {
     const { player } = usePlayer();
@@ -68,23 +69,29 @@ export default function Main() {
     },[submitFlag]);
 
     return (
-        <div className="bg-[url(/002_firstPokemon.png)] flex-1 text-orange-400 p-4">
-            {pageFlag && <>            
+        <div className="bg-[url(/002_firstPokemon.png)] flex flex-col items-center justify-center flex-1 text-white p-4">
+            {submitFlag && <div className='text-[32px]'>通信中...</div>}
+            {!submitFlag && pageFlag && <>            
                 {/* 選択中のポケモン名を表示するコンポーネント */}
                 {selectId && firstPokemons.map((pokemon: Pokemon, index: number) => {
                     let name: string = "";
-                    if (pokemon?.pokemon_id === selectId)name = pokemon.name;
-                    return name;
+                    let type: string = "";
+                    if (pokemon?.pokemon_id === selectId){
+                        name = pokemon.name;
+                        type = pokemon.type1;
+                    }
+                    return <PokemonName key={index} name={name} type={type}></PokemonName>;
                 })}
                 {/* 選択できるポケモンを表示・クリックで選択できるコンポーネント */}
                 {firstPokemons && firstPokemons.map((pokemon,index) => {
-                    return <PokemonInfo key={index} pokemon={pokemon} onSelect={handleSelect}></PokemonInfo>
+                    return <PokemonImage key={index} pokemon={pokemon} onSelect={handleSelect}></PokemonImage>
                 })}
+
                 {!submitFlag && <>            
-                <button onClick={handleSubmit}>決定</button>
+                <button className="h-[8vh] w-32 bg-white opacity-50 hover:opacity-80 text-gray-700 text-[30px]" onClick={handleSubmit}>決定</button>
                 </>}
             </>}
-            {!pageFlag && <>データ取得中...</>}
+            {!pageFlag && <div className='text-[32px]'>データ取得中...</div>}
         </div>
     )
 }

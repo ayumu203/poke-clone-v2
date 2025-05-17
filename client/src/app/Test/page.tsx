@@ -63,7 +63,7 @@ export default function Home() {
                 console.log(pokemon);
             }
         }
-        // handleDelete();
+        handleDelete();
         handleFetchFirstPokemon();
         handleRegisterFirstPokemon();
         handleFetchTeamPokemon();
