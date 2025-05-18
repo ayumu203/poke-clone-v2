@@ -120,7 +120,7 @@ app.post('/data/pokemon', async (req, res) => {
   res.status(200).json(pokemon);
 });
 
-app.post('data/move', async (req, res) => {
+app.post('/data/move', async (req, res) => {
   const move_id: number = req.body.move_id;
   const move: Move = await getMove(move_id);
   res.status(200).json(move);
