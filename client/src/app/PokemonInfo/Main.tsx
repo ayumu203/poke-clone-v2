@@ -7,7 +7,6 @@ import { TeamPokemon } from "../../../type/teamPokemon.type";
 import { fetch_pokemon } from "../../../lib/pokemon/fetch_pokemon";
 
 export default function Main() {
-    const { user } = useUser();
     const { player } = usePlayer();
     const [ pokemons ] = useState<Pokemon[]>([]);
     const [ teamPokemons ] = useState<TeamPokemon[]>([]);
@@ -22,10 +21,12 @@ export default function Main() {
                 }
             }
         }
-        if(user && player){
+        if(player){
             handleFetchTeamPokemon();
+            console.log("Pokemons: ", pokemons);
+            console.log("Team Pokemons: ", teamPokemons);
         }
-    },[user,player]);
+    },[player]);
 
     return (
         <div className="bg-[url(/002_firstPokemon.png)] flex-1 text-orange-400 p-4">

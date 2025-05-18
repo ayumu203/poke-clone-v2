@@ -12,6 +12,8 @@ import { registerTeamPokemon } from './api/teamPokemon/resisterFirstPokemon';
 import { getTeamPokemon } from './api/teamPokemon/getTeamPokemon';
 import { deleteALLTeamPokemon } from './api/teamPokemon/deleteAll';
 import { deleteALLPlayer } from './api/player/deleteAll';
+import { getMove } from './api/move/move';
+import { Move } from './type/move.type';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,15 +31,15 @@ app.post('/player', async (req, res) => {
   const player_id: string = req.body.player_id;
   const exist: Boolean = await isPlayer(player_id);
 
-  if (exist) {
-    const player: Player = await getPlayer(player_id);
-    res.status(200).json(player);
-  }
-  else if (!exist) {
+  if (!exist) {
     // プレイヤーID(SupabaseのUID),デフォルト名トレーナー君を設定
     const player_id: string = req.body.player_id;
     const name: string = "トレーナー君";
     const player: Player = await registerPlayer(player_id, name);
+    res.status(200).json(player);
+  }
+  else {
+    const player: Player = await getPlayer(player_id);
     res.status(200).json(player);
   }
 });
@@ -112,6 +114,17 @@ app.post('/team-pokemon/register', async (req, res) => {
   }
 });
 
+app.post('/data/pokemon', async (req, res) => {
+  const pokemon_id: number = req.body.pokemon_id;
+  const pokemon: Pokemon = await getPokemon(pokemon_id);
+  res.status(200).json(pokemon);
+});
+
+app.post('data/move', async (req, res) => {
+  const move_id: number = req.body.move_id;
+  const move: Move = await getMove(move_id);
+  res.status(200).json(move);
+});
 
 app.post('/delete', async (req, res) => {
   await deleteALLTeamPokemon();
