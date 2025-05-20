@@ -41,9 +41,9 @@ export default function Main() {
             setTeamPokemons(newTeamPokemons);
             setMoves(Array.from(newMoves));
 
-            console.log("Pokemons:", pokemons);
-            console.log("Team Pokemons:", teamPokemons);
-            console.log("Moves:", Array.from(moves));
+            // console.log("Pokemons:", pokemons);
+            // console.log("Team Pokemons:", teamPokemons);
+            // console.log("Moves:", Array.from(moves));
         };
 
         if (player) {

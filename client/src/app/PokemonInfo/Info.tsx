@@ -21,6 +21,7 @@ export default function Info(prop:Prop) {
                     <span>{pokemon.name}</span>
                     <span>{pokemon.type1}{pokemon.type2 !== "none" && <>・{pokemon.type2}</>}</span>
                     <span>{moves[0] && moves[0].name}</span>
+                    <span>{moves[0] && moves[0].description}</span>
                 </>
             }
         </>
