@@ -15,23 +15,33 @@ export default function SignInPage() {
   const { player } = usePlayer();
   const router = useRouter();
 
+
   useEffect(() => {
     if (user && player) {
-      router.push("/");
+      router.push("/FirstPokemon");
     }
-  }, [user]);
+  }, [user,player]);
 
   return (
     <div className="">
       <Header />
-      <div className="flex justify-center">
-        <Auth
-          supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
-          providers={["google"]}
-          onlyThirdPartyProviders
-        />
-      </div>
+      {
+        !user && 
+      <>      
+        <div className="flex justify-center">
+          <Auth
+            supabaseClient={supabase}
+            appearance={{ theme: ThemeSupa }}
+            providers={["google"]}
+            onlyThirdPartyProviders
+          />
+        </div>
+      </>
+      }
+      {
+        user && !player &&
+        <>現在ログインの処理中...</>
+      }
       <Footer />
     </div>
   );

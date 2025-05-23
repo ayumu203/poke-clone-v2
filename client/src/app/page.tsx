@@ -4,11 +4,14 @@ import { useUser } from "../../context/userContext";
 import { useRouter } from "next/navigation";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
-import Main from "./Home/Main";
+import Main from "./Main/Main";
+import { usePlayer } from "../../context/playerContext";
 
 export default function Home() {
   const { user } = useUser();
+  const { player } = usePlayer();
   const router = useRouter();
+
 
   useEffect(() => {
     if (!user) {
@@ -20,7 +23,7 @@ export default function Home() {
     <>
       <div className="min-h-screen flex flex-col">
         <Header />
-        <Main />
+        {user && player && <Main />}
         <Footer />
       </div>
     </>

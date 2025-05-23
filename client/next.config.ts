@@ -4,4 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
+module.exports = {
+  images: {
+    domains: ['raw.githubusercontent.com'],
+  },
+}
+
 export default nextConfig;

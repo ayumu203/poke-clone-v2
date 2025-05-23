@@ -15,5 +15,4 @@ export async function getTeamPokemon(player_id: string, index: number): Promise<
         move_list: data.move_list,
     }
     return teamPokemon;
-    
 }
