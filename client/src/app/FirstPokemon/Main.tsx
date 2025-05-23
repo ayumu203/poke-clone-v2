@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useUser } from '../../../context/userContext';
 import { fetch_first_pokemon } from '../../../lib/first_pokemon/fetch_first_pokemon';
 import { usePlayer } from '../../../context/playerContext';
 import { Pokemon } from '../../../type/pokemon.type';

@@ -1,22 +1,3 @@
-// type Prop = {
-//     name:string;
-//     type:string;
-// }
-
-// export default function PokemonInfo(prop:Prop) {
-//     const name = prop.name;
-//     const type = prop.type;
-//     let color = "white";
-//     // type to colorのコード
-//     return (
-//         <div className="bg-opacity-80 rounded-xl shadow-lg p-4 w-40 h-40 flex flex-col items-center justify-center text-center">
-//             {name && type && <>
-//             </>}
-//         </div>
-//     )
-// }
-
-
 type Prop = {
     name: string;
     type: string;
