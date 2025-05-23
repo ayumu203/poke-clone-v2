@@ -11,27 +11,27 @@ import { TeamPokemon } from "../../../type/teamPokemon.type";
 import { fetch_team_pokemon } from "../../../lib/team_pokemon/fetch_team_pokemon";
 import { register_first_pokemon } from "../../../lib/first_pokemon/register_first_pokemon";
 
-export const deleteall = async():Promise<void> =>{
-    const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-    console.log(base_url);
-    const url = `${base_url}/delete`;
-    try {
-        const response = await fetch(url,{
-            method:"POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-        if (!response.ok) {
-            throw new Error('response error');
-        }
-        const data = await response.json();
-        return data;
-    } catch(error){
-        console.error(error);
-        throw error;
-    }
-}
+// export const deleteall = async():Promise<void> =>{
+//     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
+//     console.log(base_url);
+//     const url = `${base_url}/delete`;
+//     try {
+//         const response = await fetch(url,{
+//             method:"POST",
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//         });
+//         if (!response.ok) {
+//             throw new Error('response error');
+//         }
+//         const data = await response.json();
+//         return data;
+//     } catch(error){
+//         console.error(error);
+//         throw error;
+//     }
+// }
 
 export default function Home() {
     const { user } = useUser();
@@ -44,7 +44,7 @@ export default function Home() {
     // 初期ポケモンオプションデータ取得テスト
     useEffect(() => {
         const handleDelete = async() => {
-            await deleteall();
+            // await deleteall();
         }
         const handleFetchFirstPokemon = async() => {
             const fpks:Pokemon[] = await fetch_first_pokemon();
