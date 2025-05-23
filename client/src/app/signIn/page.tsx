@@ -3,7 +3,7 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "../../../lib/supabase/supabase";
 import { useUser } from "../../../context/userContext";
 import Header from "../Header/Header";
