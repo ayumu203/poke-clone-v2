@@ -19,15 +19,15 @@
 
 ## システムのアーキテクチャ構成
 ### Next.js
-* Vercelへデプロイしている.
+* Vercelへデプロイ.
 
 ### NodeJS
 * Next.jsでフルスタックに開発するようにしてもいいが,いずれサーバとクライアントでWebソケットを用いた通信などを行うことも考えるとAPIサーバとWebサーバは分けておきたい.
-* GCPへデプロイしている.
+* GCPへデプロイ.
 
 ### PostgreSQL
-* Supabaseで動作させている.
-* Google認証もSupabaseを利用している.
+* Supabaseを利用.
+* Google認証もSupabaseを利用.
 
 # ローカルでの動作
 ## 環境変数の設定
