@@ -3,6 +3,7 @@
 ## 公開先
 * URL: https://poke-clone-v2.vercel.app/signIn
 * 動作がかなりゆっくり
+* Supabaseを止めちゃったのでおなくなり中
 
 ## 作成目的
 * アーキテクチャ構成の見直し(設計書の構成図を参照).
