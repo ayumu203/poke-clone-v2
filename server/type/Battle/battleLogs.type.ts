@@ -1,5 +1,5 @@
 export type BattleLogs = {
-    BattlePokemonLog: string,
+    PlayerPokemonLog: string,
     EnemyPokemonLog: string,
     BattleLog: string,
 } | null;

@@ -1,6 +1,6 @@
 import { BattlePokemon } from "./battlePokemon.type";
 
-type BattlePokemons = {
+export type BattlePokemons = {
     PlayerBattlePokemons: BattlePokemon[],
     EnemyBattlePokemons: BattlePokemon[]
 } | null;

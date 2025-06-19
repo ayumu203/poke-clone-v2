@@ -14,6 +14,7 @@ import { deleteALLTeamPokemon } from './api/teamPokemon/deleteAll';
 import { deleteALLPlayer } from './api/player/deleteAll';
 import { getMove } from './api/move/move';
 import { Move } from './type/move.type';
+import { getBattleInfo } from './api/Battle/getBattleInfo';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,7 +22,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// 動作確認用ルート
+// 動作確認用エンドポイント
 app.get('/', (req, res) => {
   res.json({ message: 'APIサーバーが稼働中です' });
 });
@@ -72,18 +73,18 @@ app.post('/first-pokemon/register', async (req, res) => {
 
 
   if (!player_exist) {
-    res.status(200).json(false);
+    res.status(200).json("failed");
     return;
   }
 
   if (pokemon_exist) {
-    res.status(200).json(false);
+    res.status(200).json("failed");
   }
 
   if (!pokemon_exist) {
     if (pokemon_id === 494 || pokemon_id === 495 || pokemon_id === 501) {
       await registerTeamPokemon(player_id, pokemon_id, index);
-      res.status(200).json(true);
+      res.status(200).json("success");
     }
   }
 });
@@ -92,11 +93,11 @@ app.post('/first-pokemon/register', async (req, res) => {
 app.post('/team-pokemon', async (req, res) => {
   const player_id: string = req.body.player_id;
   const index: number = req.body.index;
-  const exist: Boolean = await isTeamPokemon(player_id, index);
   const teamPokemon = await getTeamPokemon(player_id, index);
   res.status(200).json(teamPokemon);
 });
 
+// 手持ちポケモンの登録処理
 app.post('/team-pokemon/register', async (req, res) => {
   const player_id: string = req.body.player_id;
   const pokemon_id: number = req.body.pokemon_id;
@@ -104,16 +105,29 @@ app.post('/team-pokemon/register', async (req, res) => {
   const player_exist: Boolean = await isPlayer(player_id);
 
   if (!player_exist) {
-    res.status(200).json(false);
+    res.status(200).json("failed");
     return;
   }
 
   if (pokemon_id >= 494 && pokemon_id <= 650) {
     await registerTeamPokemon(player_id, pokemon_id, index);
-    res.status(200).json(false);
+    res.status(200).json("failed");
   }
 });
 
+app.post('/battle/init', async(req, res) => {
+  const player_id: string = req.body.player_id;
+  const player_exist: Boolean = await isPlayer(player_id);
+  if(!player_exist) {
+    res.status(200).json("failed");
+    return;
+  }
+  const battleInfo = await getBattleInfo(player_id);
+  console.log(battleInfo);
+  res.status(200).json(battleInfo);
+});
+
+// マスタデータ
 app.post('/data/pokemon', async (req, res) => {
   const pokemon_id: number = req.body.pokemon_id;
   const pokemon: Pokemon = await getPokemon(pokemon_id);
@@ -126,6 +140,7 @@ app.post('/data/move', async (req, res) => {
   res.status(200).json(move);
 });
 
+// 削除用エンドポイント
 app.post('/delete', async (req, res) => {
   await deleteALLTeamPokemon();
   await deleteALLPlayer();

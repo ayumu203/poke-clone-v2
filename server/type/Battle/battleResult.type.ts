@@ -1,6 +1,6 @@
 import { Pokemon } from "../pokemon.type";
 
-type BattleResult = {
+export type BattleResult = {
     IsFinished: boolean,
     TotalTurn: number,
     GainExp: number,
