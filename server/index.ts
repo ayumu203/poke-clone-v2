@@ -29,12 +29,12 @@ app.get('/', (req, res) => {
 
 // playerのデータを参照・データが存在しない場合は登録を行うAPI
 app.post('/player', async (req, res) => {
-  const player_id: string = req.body.player_id;
-  const exist: Boolean = await isPlayer(player_id);
+  const { player_id } = req.body as { player_id: string };
+  const exist: boolean = await isPlayer(player_id);
 
   if (!exist) {
     // プレイヤーID(SupabaseのUID),デフォルト名トレーナー君を設定
-    const player_id: string = req.body.player_id;
+    const { player_id } = req.body as { player_id: string };
     const name: string = "トレーナー君";
     const player: Player = await registerPlayer(player_id, name);
     res.status(200).json(player);
@@ -47,8 +47,8 @@ app.post('/player', async (req, res) => {
 
 // playerのデータを登録するAPI(プレイヤー名の変更等で使用予定)
 app.post('/player/register', async (req, res) => {
-  const player_id: string = req.body.player_id;
-  const name: string = req.body.name;
+  const { player_id } = req.body as { player_id: string };
+  const { name } = req.body as { name: string };
   const palyer: Player = await registerPlayer(player_id, name);
   res.status(200).json(palyer);
 });
@@ -65,11 +65,10 @@ app.post('/first-pokemon', async (req, res) => {
 
 // 最初のポケモンを登録するAPI
 app.post('/first-pokemon/register', async (req, res) => {
-  const player_id: string = req.body.player_id;
-  const pokemon_id: number = req.body.pokemon_id;
+  const { player_id, pokemon_id } = req.body as { player_id: string, pokemon_id: number };
   const index: number = 0;
-  const player_exist: Boolean = await isPlayer(player_id);
-  const pokemon_exist: Boolean = await isTeamPokemon(player_id, 0);
+  const player_exist: boolean = await isPlayer(player_id);
+  const pokemon_exist: boolean = await isTeamPokemon(player_id, 0);
 
 
   if (!player_exist) {
@@ -91,18 +90,15 @@ app.post('/first-pokemon/register', async (req, res) => {
 
 // 手持ちのポケモンをplayer_id,index(配置位置)で取得するAPI
 app.post('/team-pokemon', async (req, res) => {
-  const player_id: string = req.body.player_id;
-  const index: number = req.body.index;
+  const { player_id, index } = req.body as { player_id: string, index: number };
   const teamPokemon = await getTeamPokemon(player_id, index);
   res.status(200).json(teamPokemon);
 });
 
 // 手持ちポケモンの登録処理
 app.post('/team-pokemon/register', async (req, res) => {
-  const player_id: string = req.body.player_id;
-  const pokemon_id: number = req.body.pokemon_id;
-  const index: number = req.body.index;
-  const player_exist: Boolean = await isPlayer(player_id);
+  const { player_id, pokemon_id, index } = req.body as { player_id: string, pokemon_id: number, index: number };
+  const player_exist: boolean = await isPlayer(player_id);
 
   if (!player_exist) {
     res.status(200).json("failed");
@@ -116,26 +112,29 @@ app.post('/team-pokemon/register', async (req, res) => {
 });
 
 app.post('/battle/init', async(req, res) => {
-  const player_id: string = req.body.player_id;
-  const player_exist: Boolean = await isPlayer(player_id);
-  if(!player_exist) {
+  const { player_id } = req.body as { player_id: string };
+  const player_exist: boolean = await isPlayer(player_id);
+  // if(!player_exist) {
+  //   res.status(200).json("failed");
+  //   return;
+  // }
+  const battleInfo = await getBattleInfo(player_id);
+  if(!battleInfo) {
     res.status(200).json("failed");
     return;
   }
-  const battleInfo = await getBattleInfo(player_id);
-  console.log(battleInfo);
   res.status(200).json(battleInfo);
 });
 
 // マスタデータ
 app.post('/data/pokemon', async (req, res) => {
-  const pokemon_id: number = req.body.pokemon_id;
+  const { pokemon_id } = req.body as { pokemon_id: number };
   const pokemon: Pokemon = await getPokemon(pokemon_id);
   res.status(200).json(pokemon);
 });
 
 app.post('/data/move', async (req, res) => {
-  const move_id: number = req.body.move_id;
+  const { move_id } = req.body as { move_id: number };
   const move: Move = await getMove(move_id);
   res.status(200).json(move);
 });

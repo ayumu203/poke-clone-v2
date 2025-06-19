@@ -11,7 +11,6 @@ import { getTeamPokemon } from "../teamPokemon/getTeamPokemon";
 import { getBattlePokemon } from "./getBattlePokemon";
 
 export const getBattleInfo = async (player_id: string): Promise<BattleInfo> => {
-
     // 手持ちポケモンの生成
     const battlePokemons: BattlePokemons = {
         PlayerBattlePokemons: [],
@@ -19,14 +18,18 @@ export const getBattleInfo = async (player_id: string): Promise<BattleInfo> => {
     };
     const playerBattlePokemons: BattlePokemon[] = [];
     for (let i = 0; i < 3; i++) {
+        console.log("getBattleInfo called with player_id:", player_id);
         const teamPokemon: TeamPokemon = await getTeamPokemon(player_id, i);
-        if (!teamPokemon) return null;;
+        if( !teamPokemon && i === 0) return null;
+        if (!teamPokemon) continue;
         const pokemon: Pokemon = await getPokemon(teamPokemon.pokemon_id);
         const battlePokemon: BattlePokemon = getBattlePokemon(pokemon, teamPokemon);
         if (playerBattlePokemons) {
             playerBattlePokemons.push(battlePokemon);
         }
     }
+    
+    console.log("playerBattlePokemons", playerBattlePokemons);
 
     // 敵ポケモンの生成
     const EnemyBattlePokemons: BattlePokemon[] = [];
