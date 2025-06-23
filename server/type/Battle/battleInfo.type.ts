@@ -4,6 +4,6 @@ import { BattleResult } from "./battleResult.type";
 
 export type BattleInfo = {  
     battlePokemons: BattlePokemons,
-    BattleResult: BattleResult,
+    battleResult: BattleResult,
     battleLogs: BattleLogs
 } | null;

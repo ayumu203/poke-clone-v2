@@ -14,7 +14,7 @@ import { deleteALLTeamPokemon } from './api/teamPokemon/deleteAll';
 import { deleteALLPlayer } from './api/player/deleteAll';
 import { getMove } from './api/move/move';
 import { Move } from './type/move.type';
-import { getBattleInfo } from './api/Battle/getBattleInfo';
+import { initBattleInfo } from './api/Battle/initBattleInfo';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -114,15 +114,13 @@ app.post('/team-pokemon/register', async (req, res) => {
 app.post('/battle/init', async(req, res) => {
   const { player_id } = req.body as { player_id: string };
   const player_exist: boolean = await isPlayer(player_id);
-  // if(!player_exist) {
-  //   res.status(200).json("failed");
-  //   return;
-  // }
-  const battleInfo = await getBattleInfo(player_id);
-  if(!battleInfo) {
+  if(!player_exist) {
     res.status(200).json("failed");
     return;
   }
+
+  const battleInfo = await initBattleInfo(player_id);
+  
   res.status(200).json(battleInfo);
 });
 
