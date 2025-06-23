@@ -2,7 +2,7 @@ import { BattleInfo } from "../../../type/Battle/battleInfo.type";
 import { BattlePokemon } from "../../../type/Battle/battlePokemon.type";
 import { Move } from "../../../type/move.type";
 
-export const handleShift = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo => {
+export const handleAttack = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo => {
     // 必要データの確認
     if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || !move) {
         console.error("failed");
@@ -47,6 +47,8 @@ export const handleShift = (battleInfo: BattleInfo, playerOrEnemy: string, move:
             }
             break;
     }
+
+    return battleInfo;
 }
 
 const handleDamage = (attackPokemon: BattlePokemon, defencePokemon: BattlePokemon, move: Move): { defencePokemon: BattlePokemon , log: string } | null => {
@@ -67,7 +69,7 @@ const handleDamage = (attackPokemon: BattlePokemon, defencePokemon: BattlePokemo
     if (attackPokemon.current_hp < 0) {
         attackPokemon.current_hp = 0;
     }
-    const log = `${defencePokemon.name}の${move.name}.${attackPokemon.name}は${defencePokemon.name}に${damage}のダメージを与えた！`;
+    const log = `${attackPokemon.name}の${move.name}.${attackPokemon.name}は${defencePokemon.name}に${damage}のダメージを与えた！`;
 
     return { defencePokemon, log };
 }

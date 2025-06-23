@@ -1,8 +1,10 @@
-import { BattleInfo } from "../../type/Battle/battleInfo.type";
-import { BattlePokemon } from "../../type/Battle/battlePokemon.type";
-import { getMove } from "../move/move";
-import { handleAilment } from "./module/handleAilment";
-import { handleShift } from "./module/handleShift";
+import { BattleInfo } from "../../../type/Battle/battleInfo.type";
+import { BattlePokemon } from "../../../type/Battle/battlePokemon.type";
+import { Move } from "../../../type/move.type";
+import { getMove } from "../../move/move";
+import { handleAilment } from "../module/handleAilment";
+import { handleAttack } from "../module/handleAttack";
+import { handleShift } from "../module/handleShift";
 
 export const handleFight = async (battleInfo: BattleInfo, command_id: number): Promise<BattleInfo> => {
     // 必要データの確認
@@ -25,13 +27,13 @@ export const handleFight = async (battleInfo: BattleInfo, command_id: number): P
     }
 
     // 技IDの取得
-    const player_move_id = playerBattlePokemon.move_list[command_id];
-    const random_number = Math.floor(Math.random() * 3.9999999999999999);
-    const enemyBattlePokemon_move_id = enemyBattlePokemon.move_list[0];
+    const player_move_id: number = playerBattlePokemon.move_list[command_id];
+    const random_number: number = Math.floor(Math.random() * 3.9999999999999999);
+    const enemyBattlePokemon_move_id:number = enemyBattlePokemon.move_list[random_number];
 
     // 技データの取得
-    const playerMove = getMove(player_move_id);
-    const enemyMove = getMove(enemyBattlePokemon_move_id);
+    const playerMove: Move = await getMove(player_move_id);
+    const enemyMove: Move = await getMove(enemyBattlePokemon_move_id);
 
     // 手持ち状態異常の判定
     let  playerActionFlag = true;
@@ -45,7 +47,7 @@ export const handleFight = async (battleInfo: BattleInfo, command_id: number): P
     playerActionFlag = playerAilmentResult.actionFlag;
     
     // 相手の状態異常の判定
-    const enemyAilmentData = handleAilment(battleInfo, "player");
+    const enemyAilmentData = handleAilment(battleInfo, "enemy");
     if (!enemyAilmentData) {
         console.error("failed");
         return null;
@@ -56,14 +58,14 @@ export const handleFight = async (battleInfo: BattleInfo, command_id: number): P
     enemyActionFlag = enemyAilmentData.actionFlag;
 
     // HP確認処理
-    if (playerBattlePokemon.current_hp === 0) {
+    if (playerBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
         let shiftResult = handleShift(battleInfo,"player");
         if (!shiftResult?.sucsess) {
             // 戦闘終了処理 
         } 
     }
-    else if (enemyBattlePokemon.current_hp === 0) {
+    else if (enemyBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
         let shiftResult = handleShift(battleInfo,"enemy");
         if (!shiftResult?.sucsess) {
@@ -74,19 +76,40 @@ export const handleFight = async (battleInfo: BattleInfo, command_id: number): P
     // 優先度・素早さ判定   
     if (playerBattlePokemon.speed >= enemyBattlePokemon.speed) {
         // プレイヤーの攻撃処理
+        if(playerActionFlag && playerBattlePokemon.current_hp > 0)battleInfo = handleAttack(battleInfo, "player", playerMove);
         // 相手の攻撃処理
+        if(enemyActionFlag && enemyBattlePokemon.current_hp > 0) battleInfo = handleAttack(battleInfo, "enemy", enemyMove);
     }
     else if (playerBattlePokemon.speed < enemyBattlePokemon.speed) {
         // 相手の攻撃処理
+        if(enemyActionFlag && enemyBattlePokemon.current_hp > 0) battleInfo = handleAttack(battleInfo, "enemy", enemyMove);
         // プレイヤーの攻撃処理
+        if(playerActionFlag && playerBattlePokemon.current_hp > 0) battleInfo = handleAttack(battleInfo, "player", playerMove);
     }
 
     // HP確認処理
-    if (playerBattlePokemon.current_hp === 0 || enemyBattlePokemon.current_hp === 0) {
+    if (playerBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
+        let shiftResult = handleShift(battleInfo,"player");
+        if (!shiftResult?.sucsess) {
+            // 戦闘終了処理
+            console.log("戦闘終了処理: プレイヤーのポケモンが倒れました。"); 
+        }
     }
 
+    if (enemyBattlePokemon.current_hp <= 0) {
+        // 交代処理 または 戦闘終了処理
+        let shiftResult;
+        shiftResult = handleShift(battleInfo,"enemy");
+        if (!shiftResult?.sucsess) {
+            // 戦闘終了処理 倒したポケモンに応じた経験値 レベルアップ処理
+            console.log("戦闘終了処理: 相手のポケモンが倒れました。"); 
+        }   
+    }
+
+
     // 合計ターンの更新処理
+    if(battleInfo?.battleResult?.totalTurn)battleInfo.battleResult.totalTurn += 1;
+
+    return battleInfo;
 }
-
-

@@ -10,14 +10,14 @@ export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { 
 
     // 各戦闘ポケモンの取得
     let BattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
-    if(playerOrEnemy === "player") {
+    if (playerOrEnemy === "player") {
         if (!battleInfo.battlePokemons.PlayerBattlePokemons || battleInfo.battlePokemons.PlayerBattlePokemons.length === 0) {
             console.error("failed");
             return null;
         }
         BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
     }
-    else if(playerOrEnemy === "enemy") {
+    else if (playerOrEnemy === "enemy") {
         if (!battleInfo.battlePokemons.EnemyBattlePokemons || battleInfo.battlePokemons.EnemyBattlePokemons.length === 0) {
             console.error("failed");
             return null;
@@ -35,7 +35,7 @@ export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { 
 
     // 手持ちポケモン状態異常の処理
     if (BattlePokemon.ailment === "sleep") {
-        const sleep_random_number = Math.floor(Math.random());
+        const sleep_random_number = Math.random();
         if (sleep_random_number > 0.6) {
             BattlePokemon.ailment = "none";
             actionFlag = true;
@@ -47,7 +47,7 @@ export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { 
         }
     }
     else if (BattlePokemon.ailment === "paralysis") {
-        const paralysis_random_number = Math.floor(Math.random());
+        const paralysis_random_number = Math.random();
         if (paralysis_random_number > 0.25) {
             actionFlag = true;
         }
@@ -57,7 +57,7 @@ export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { 
         }
     }
     else if (BattlePokemon.ailment === "freeze") {
-        const freeze_random_number = Math.floor(Math.random());
+        const freeze_random_number = Math.random();
         if (freeze_random_number > 0.6) {
             BattlePokemon.ailment = "none";
             actionFlag = true;
@@ -93,7 +93,7 @@ export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { 
         }
     }
     else if (BattlePokemon.ailment === "confusion") {
-        const confusion_random_number = Math.floor(Math.random());
+        const confusion_random_number = Math.random();
         if (confusion_random_number > 0.5) {
             BattlePokemon.current_hp -= BattlePokemon.max_hp * 0.25;
             if (BattlePokemon.current_hp <= 0) {
@@ -118,6 +118,10 @@ export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { 
     else if (BattlePokemon.ailment === "infatuation") { }
     else if (BattlePokemon.ailment === "yawn") { }
 
-    battleInfo.battlePokemons.PlayerBattlePokemons[0] = BattlePokemon;
+    if (playerOrEnemy === "player") {
+        battleInfo.battlePokemons.PlayerBattlePokemons[0] = BattlePokemon;
+    } else if (playerOrEnemy === "enemy") {
+        battleInfo.battlePokemons.EnemyBattlePokemons[0] = BattlePokemon;
+    }
     return { battleInfo, actionFlag };
 }
