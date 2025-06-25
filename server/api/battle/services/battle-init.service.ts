@@ -10,21 +10,22 @@ import { getPokemon } from "../../pokemon/pokemon";
 import { getTeamPokemon } from "../../teamPokemon/getTeamPokemon";
 import { battlePokemonService } from "./battle-pokemon.service";
 
-export const battleInitService = async (player_id: string): Promise<BattleInfo> => {
+export const battleInitService = async (player_id: string): Promise<BattleInfo | null> => {
     // 手持ちポケモンの生成
     const battlePokemons: BattlePokemons = {
         PlayerBattlePokemons: [],
         EnemyBattlePokemons: []
     };
-    const playerBattlePokemons: BattlePokemon[] = [];
+    const playerBattlePokemons: (BattlePokemon | null)[] = [];
     for (let i = 0; i < 3; i++) {
         console.log("getBattleInfo called with player_id:", player_id);
-        const teamPokemon: TeamPokemon = await getTeamPokemon(player_id, i);
+        const teamPokemon: TeamPokemon | null = await getTeamPokemon(player_id, i);
         if( !teamPokemon && i === 0) return null;
         if (!teamPokemon) continue;
-        const pokemon: Pokemon = await getPokemon(teamPokemon.pokemon_id);
-        const battlePokemon: BattlePokemon = battlePokemonService(pokemon, teamPokemon);
-        if (playerBattlePokemons) {
+        const pokemon: Pokemon | null = await getPokemon(teamPokemon.pokemon_id ?? 0);
+        if (!pokemon) continue;
+        const battlePokemon: BattlePokemon | null = battlePokemonService(pokemon, teamPokemon);
+        if (battlePokemon) {
             playerBattlePokemons.push(battlePokemon);
         }
     }
@@ -32,27 +33,27 @@ export const battleInitService = async (player_id: string): Promise<BattleInfo> 
     console.log("playerBattlePokemons", playerBattlePokemons);
 
     // 敵ポケモンの生成
-    const EnemyBattlePokemons: BattlePokemon[] = [];
+    const EnemyBattlePokemons: (BattlePokemon | null)[] = [];
     for (let i = 0; i < 3; i++) {
         const randomPokemonId: number = Math.random() * (POKEMON_ID_END - POKEMON_ID_BEGIN + 1) + POKEMON_ID_BEGIN;
-        const pokemon: Pokemon = await getPokemon(Math.floor(randomPokemonId));
+        const pokemon: Pokemon | null = await getPokemon(Math.floor(randomPokemonId));
         if (!pokemon) continue;
         const teamPokemon: TeamPokemon = {
             player_id: "enemy",
             index: i,
-            pokemon_id: pokemon.pokemon_id,
+            pokemon_id: pokemon.pokemon_id ?? 0,
             level: Math.floor(Math.random() * 10) + 5,
             exp: 0,
-            move_list: pokemon.move_list.slice(0, 4)
+            move_list: pokemon.move_list ?? []
         }
-        const battlePokemon: BattlePokemon = battlePokemonService(pokemon, teamPokemon);
-        if (battlePokemon)EnemyBattlePokemons.push(battlePokemon);
+        const battlePokemon: BattlePokemon | null = battlePokemonService(pokemon, teamPokemon);
+        if (battlePokemon) EnemyBattlePokemons.push(battlePokemon);
     }
 
     // ログの生成
     const battleLog: BattleLogs = {
-        playerPokemonLog: "行け" + playerBattlePokemons[0]!.name + "!",
-        enemyPokemonLog: "敵の" + EnemyBattlePokemons[0]!.name + "が現れた!",
+        playerPokemonLog: "行け" + (playerBattlePokemons[0]?.name || "ポケモン") + "!",
+        enemyPokemonLog: "敵の" + (EnemyBattlePokemons[0]?.name || "ポケモン") + "が現れた!",
         battleLog: ""
     };
 

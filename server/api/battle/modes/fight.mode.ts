@@ -9,7 +9,7 @@ import { shiftHandler } from "../handlers/shift.handler";
 
 export const fightMode = async (battleInfo: BattleInfo, command_id: number): Promise<BattleInfo> => {
     // 必要データの確認
-    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs) {
+    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined) {
         console.error("handleFight: Required battle data is missing or invalid");
         return null;
     }
@@ -20,9 +20,9 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
     }
 
     // 各戦闘ポケモンの取得
-    const playerBattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
-    const enemyBattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.EnemyBattlePokemons[0];
-    if (!playerBattlePokemon || !enemyBattlePokemon) {
+    const playerBattlePokemon: BattlePokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+    const enemyBattlePokemon: BattlePokemon = battleInfo.battlePokemons.EnemyBattlePokemons[0];
+    if (!playerBattlePokemon || playerBattlePokemon === undefined || !enemyBattlePokemon || enemyBattlePokemon === undefined) {
         console.error("handleFight: Player or enemy battle pokemon not found");
         return null;
     }
@@ -36,11 +36,16 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
     const playerMove: Move = await getMove(player_move_id);
     const enemyMove: Move = await getMove(enemyBattlePokemon_move_id);
 
+    if (!playerMove || playerMove === undefined || !enemyMove || enemyMove === undefined) {
+        console.error("fightMode: Failed to get move data");
+        return null;
+    }
+
     // 手持ち状態異常の判定
     let playerActionFlag = true;
     let enemyActionFlag = true;
     const playerAilmentResult = ailmentHandler(battleInfo, "player");
-    if (!playerAilmentResult) {
+    if (!playerAilmentResult || playerAilmentResult === undefined) {
         console.error("fightMode: Failed to handle player ailment");
         return null;
     }
@@ -49,7 +54,7 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
 
     // 相手の状態異常の判定
     const enemyAilmentData = ailmentHandler(battleInfo, "enemy");
-    if (!enemyAilmentData) {
+    if (!enemyAilmentData || enemyAilmentData === undefined) {
         console.error("handleFight: Failed to handle enemy ailment");
         return null;
     }

@@ -5,4 +5,4 @@ export type TeamPokemon = {
     level:number;
     exp:number;
     move_list:number[];
-} | null;
+} | null | undefined;

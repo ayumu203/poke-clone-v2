@@ -1,9 +1,13 @@
 import { battleAction } from "../../../type/battle/battleAction.type";
 import { BattleInfo } from "../../../type/battle/battleInfo.type";
+import { BattleLogs } from "../../../type/battle/battleLogs.type";
+import { BattlePokemons } from "../../../type/battle/battlePokemons.type";
+import { BattleResult } from "../../../type/battle/battleResult.type";
 import { fightMode } from "../modes/fight.mode";
+import { switchMode } from "../modes/switch.mode";
 
 export const battleInfoService = async (battleInfo: BattleInfo, battleAction: battleAction): Promise<BattleInfo> => {
-    if( !battleInfo || !battleAction ) {
+    if( !battleInfo || battleInfo === undefined || !battleAction || battleAction === undefined ) {
         console.error("getBattleInfo: Required battleInfo or battleAction is missing");
         return null;
     }
@@ -16,6 +20,8 @@ export const battleInfoService = async (battleInfo: BattleInfo, battleAction: ba
                 battleInfo = await fightMode(battleInfo, command_id);
                 break;
             case "switch":
+                // command_idの位置のポケモンと交代する
+                battleInfo = await switchMode(battleInfo, command_id);
                 break;    
             case "get":
                 break;

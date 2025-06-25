@@ -5,4 +5,4 @@ export type Rank = {
     special_defence: number,
     speed: number,
     accuracy: number
-} | null;
+} | null | undefined;

@@ -5,4 +5,4 @@ export type BattleResult = {
     totalTurn: number,
     gainExp: number,
     gainPokemon: Pokemon
-} | null;
+} | null | undefined;

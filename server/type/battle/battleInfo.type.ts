@@ -6,4 +6,4 @@ export type BattleInfo = {
     battlePokemons: BattlePokemons,
     battleResult: BattleResult,
     battleLogs: BattleLogs
-} | null;
+} | null | undefined;

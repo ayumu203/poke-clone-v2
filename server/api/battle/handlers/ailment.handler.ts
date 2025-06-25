@@ -3,29 +3,29 @@ import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
 
 export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): { battleInfo: BattleInfo, actionFlag: boolean } | null => {
     // 必要データの確認
-    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs) {
+    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined) {
         console.error("handleAilment: Required battle data is missing or invalid");
         return null;
     }
 
     // 各戦闘ポケモンの取得
-    let BattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
+    let BattlePokemon: BattlePokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
     if (playerOrEnemy === "player") {
         if (!battleInfo.battlePokemons.PlayerBattlePokemons || battleInfo.battlePokemons.PlayerBattlePokemons.length === 0) {
             console.error("handleAilment: Player battle pokemon not found");
             return null;
         }
-        BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
+        BattlePokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
     }
     else if (playerOrEnemy === "enemy") {
         if (!battleInfo.battlePokemons.EnemyBattlePokemons || battleInfo.battlePokemons.EnemyBattlePokemons.length === 0) {
             console.error("handleAilment: Enemy battle pokemon not found");
             return null;
         }
-        BattlePokemon = battleInfo!.battlePokemons!.EnemyBattlePokemons[0];
+        BattlePokemon = battleInfo.battlePokemons.EnemyBattlePokemons[0];
     }
 
-    if (!BattlePokemon) {
+    if (!BattlePokemon || BattlePokemon === undefined) {
         console.error("handleAilment: Battle pokemon is not available");
         return null;
     }

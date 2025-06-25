@@ -1,13 +1,13 @@
-// /pkcv2/server/test.ts
+// /pkcv2/server/tests/battle-system.test.ts
 
-import { battleInfoService } from './api/battle/services/battle-info.service';
-import { shiftHandler } from './api/battle/handlers/shift.handler';
-import { ailmentHandler } from './api/battle/handlers/ailment.handler';
-import { attackHandler } from './api/battle/handlers/attack.handler';
-import { BattleInfo } from './type/battle/battleInfo.type';
-import { BattlePokemon } from './type/battle/battlePokemon.type';
-import { Move } from './type/move.type';
-import { battleAction } from './type/battle/battleAction.type';
+import { battleInfoService } from '../api/battle/services/battle-info.service';
+import { shiftHandler } from '../api/battle/handlers/shift.handler';
+import { ailmentHandler } from '../api/battle/handlers/ailment.handler';
+import { attackHandler } from '../api/battle/handlers/attack.handler';
+import { BattleInfo } from '../type/battle/battleInfo.type';
+import { BattlePokemon } from '../type/battle/battlePokemon.type';
+import { Move } from '../type/move.type';
+import { battleAction } from '../type/battle/battleAction.type';
 
 // --- モックデータ ---
 
@@ -92,6 +92,106 @@ const MOCK_MOVES: NonNullable<Move>[] = [
     stat_rank: [], 
     stat_target: "" 
   },
+  { 
+    move_id: 5, 
+    name: 'でんじは', 
+    category: 'ailment', 
+    power: 0, 
+    type: 'electric', 
+    accuracy: 100,
+    ailment: "paralysis", 
+    ailment_chance: 100, 
+    damage_class: "status", 
+    description: "", 
+    drain: 0, 
+    healing: 0, 
+    pp: 20, 
+    priority: 0, 
+    stat_chance: 0,
+    stat_name: [], 
+    stat_rank: [], 
+    stat_target: "" 
+  },
+  { 
+    move_id: 6, 
+    name: 'ねむりごな', 
+    category: 'ailment', 
+    power: 0, 
+    type: 'grass', 
+    accuracy: 75,
+    ailment: "sleep", 
+    ailment_chance: 100, 
+    damage_class: "status", 
+    description: "", 
+    drain: 0, 
+    healing: 0, 
+    pp: 15, 
+    priority: 0, 
+    stat_chance: 0,
+    stat_name: [], 
+    stat_rank: [], 
+    stat_target: "" 
+  },
+  { 
+    move_id: 7, 
+    name: 'かえんほうしゃ', 
+    category: 'damage', 
+    power: 90, 
+    type: 'fire', 
+    accuracy: 100,
+    ailment: "burn", 
+    ailment_chance: 10, 
+    damage_class: "special", 
+    description: "", 
+    drain: 0, 
+    healing: 0, 
+    pp: 15, 
+    priority: 0, 
+    stat_chance: 0,
+    stat_name: [], 
+    stat_rank: [], 
+    stat_target: "" 
+  },
+  { 
+    move_id: 8, 
+    name: 'れいとうビーム', 
+    category: 'damage', 
+    power: 90, 
+    type: 'ice', 
+    accuracy: 100,
+    ailment: "freeze", 
+    ailment_chance: 10, 
+    damage_class: "special", 
+    description: "", 
+    drain: 0, 
+    healing: 0, 
+    pp: 10, 
+    priority: 0, 
+    stat_chance: 0,
+    stat_name: [], 
+    stat_rank: [], 
+    stat_target: "" 
+  },
+  { 
+    move_id: 9, 
+    name: 'あやしいひかり', 
+    category: 'ailment', 
+    power: 0, 
+    type: 'ghost', 
+    accuracy: 100,
+    ailment: "confusion", 
+    ailment_chance: 100, 
+    damage_class: "status", 
+    description: "", 
+    drain: 0, 
+    healing: 0, 
+    pp: 10, 
+    priority: 0, 
+    stat_chance: 0,
+    stat_name: [], 
+    stat_rank: [], 
+    stat_target: "" 
+  },
 ];
 
 
@@ -153,8 +253,8 @@ const runBattleSimulation = async (battleNumber: number, initialBattleInfo: Batt
         return;
     }
     console.log(`\n--- テスト対戦 ${battleNumber} 開始 ---`);
-    console.log(`プレイヤー: ${initialBattleInfo.battlePokemons.PlayerBattlePokemons.map(p => p ? `${p.name}(HP:${p.current_hp})` : 'N/A').join(', ')}`);
-    console.log(`相手: ${initialBattleInfo.battlePokemons.EnemyBattlePokemons.map(p => p ? `${p.name}(HP:${p.current_hp})` : 'N/A').join(', ')}`);
+    console.log(`プレイヤー: ${initialBattleInfo.battlePokemons.PlayerBattlePokemons.map(p => p ? `${p.name ?? 'N/A'}(HP:${p.current_hp ?? 0})` : 'N/A').join(', ')}`);
+    console.log(`相手: ${initialBattleInfo.battlePokemons.EnemyBattlePokemons.map(p => p ? `${p.name ?? 'N/A'}(HP:${p.current_hp ?? 0})` : 'N/A').join(', ')}`);
     console.log('---------------------------------');
 
     let battleInfo: BattleInfo = JSON.parse(JSON.stringify(initialBattleInfo));
@@ -172,11 +272,11 @@ const runBattleSimulation = async (battleNumber: number, initialBattleInfo: Batt
             console.log(`[TURN ${turn}] プレイヤーまたは相手のポケモンが見つかりません。`);
             break;
         }
-        if (playerPokemon?.current_hp <= 0 || enemyPokemon?.current_hp <= 0) {
+        if ((playerPokemon?.current_hp ?? 0) <= 0 || (enemyPokemon?.current_hp ?? 0) <= 0) {
             break; // どちらかの手持ちが全滅したらループを抜ける
         }
 
-        if (!playerPokemon || playerPokemon.current_hp === 0) {
+        if (!playerPokemon || (playerPokemon.current_hp ?? 0) === 0) {
             const shiftResult = shiftHandler(battleInfo, "player");
             if (shiftResult && shiftResult.sucsess) {
                 battleInfo = shiftResult.battleInfo;
@@ -188,7 +288,7 @@ const runBattleSimulation = async (battleNumber: number, initialBattleInfo: Batt
                 break;
             }
         }
-        if (!enemyPokemon || enemyPokemon.current_hp === 0) {
+        if (!enemyPokemon || (enemyPokemon.current_hp ?? 0) === 0) {
             const shiftResult = shiftHandler(battleInfo, "enemy");
             if (shiftResult && shiftResult.sucsess) {
                 battleInfo = shiftResult.battleInfo;
@@ -202,8 +302,8 @@ const runBattleSimulation = async (battleNumber: number, initialBattleInfo: Batt
         }
 
         console.log(`\n[ターン ${turn}]`);
-        console.log(`プレイヤー: ${playerPokemon.name} (HP: ${playerPokemon.current_hp}) (状態: ${playerPokemon.ailment})`);
-        console.log(`相手: ${enemyPokemon.name} (HP: ${enemyPokemon.current_hp}) (状態: ${enemyPokemon.ailment})`);
+        console.log(`プレイヤー: ${playerPokemon?.name ?? 'N/A'} (HP: ${playerPokemon?.current_hp ?? 0}) (状態: ${playerPokemon?.ailment ?? 'unknown'})`);
+        console.log(`相手: ${enemyPokemon?.name ?? 'N/A'} (HP: ${enemyPokemon?.current_hp ?? 0}) (状態: ${enemyPokemon?.ailment ?? 'unknown'})`);
 
         const action: battleAction = { action_name: 'fight', command_id: 3 };
         battleInfo = await battleInfoService(battleInfo, action);
@@ -245,6 +345,7 @@ const runAllTests = async () => {
     // 詳細テスト実行
     await testAttackHandler();
     await testAilmentHandler(); 
+    await testDetailedAilmentStates(); // 新しい詳細状態異常テスト
     await testShiftHandler();
     await testBattleFlow();
     
@@ -312,6 +413,337 @@ const runAllTests = async () => {
     console.log('\n🎉 === すべてのテストが完了しました === 🎉');
 };
 
+// 個別の状態異常テスト関数
+
+// 毒状態の複数ターンテスト
+const testPoisonMultipleTurns = async () => {
+    console.log('毒状態のポケモンを5ターン処理してダメージを確認');
+    
+    const poisonedPokemon = createMockPokemon(100, 'どくテスト', { 
+        ailment: 'poison', 
+        max_hp: 100, 
+        current_hp: 100 
+    });
+    const normalPokemon = createMockPokemon(101, 'ノーマル', {});
+    
+    let battleInfo = createInitialBattleInfo([poisonedPokemon], [normalPokemon]);
+    
+    for (let turn = 1; turn <= 5; turn++) {
+        if (!battleInfo.battlePokemons?.PlayerBattlePokemons[0]) break;
+        
+        const pokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+        const hpBefore = pokemon?.current_hp ?? 0;
+        
+        console.log(`ターン${turn}前: HP ${hpBefore}/${pokemon?.max_hp ?? 100} (状態: ${pokemon?.ailment ?? 'unknown'})`);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            battleInfo = result.battleInfo;
+            const pokemonAfter = battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter) {
+                const damage = hpBefore - (pokemonAfter.current_hp ?? 0);
+                console.log(`ターン${turn}後: HP ${pokemonAfter.current_hp ?? 0}/${pokemonAfter.max_hp ?? 100} (ダメージ: ${damage}) (状態: ${pokemonAfter.ailment ?? 'unknown'})`);
+                
+                if ((pokemonAfter.current_hp ?? 0) <= 0) {
+                    console.log('✓ ポケモンが毒で倒れました');
+                    break;
+                }
+            }
+        }
+    }
+};
+
+// 麻痺状態の複数回判定テスト
+const testParalysisMultipleChecks = async () => {
+    console.log('麻痺状態のポケモンを10回処理して行動可能率を確認');
+    
+    let actionableCount = 0;
+    let totalTests = 10;
+    
+    for (let test = 1; test <= totalTests; test++) {
+        const paralyzedPokemon = createMockPokemon(200 + test, 'まひテスト', { 
+            ailment: 'paralysis', 
+            max_hp: 100, 
+            current_hp: 100 
+        });
+        const normalPokemon = createMockPokemon(300 + test, 'ノーマル', {});
+        
+        const battleInfo = createInitialBattleInfo([paralyzedPokemon], [normalPokemon]);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.actionFlag) {
+            actionableCount++;
+        }
+    }
+    
+    const actionableRate = (actionableCount / totalTests) * 100;
+    console.log(`行動可能回数: ${actionableCount}/${totalTests} (${actionableRate.toFixed(1)}%)`);
+    console.log(`理論値: 75% (麻痺で動けない確率25%)`);
+    
+    if (actionableRate >= 50 && actionableRate <= 100) {
+        console.log('✓ 麻痺の行動可能率が妥当な範囲内です');
+    } else {
+        console.log('✗ 麻痺の行動可能率が想定外です');
+    }
+};
+
+// 眠り状態の複数ターンテスト
+const testSleepMultipleTurns = async () => {
+    console.log('眠り状態のポケモンを処理して起床するまで確認');
+    
+    const sleepingPokemon = createMockPokemon(400, 'すいみんテスト', { 
+        ailment: 'sleep', 
+        max_hp: 100, 
+        current_hp: 100 
+    });
+    const normalPokemon = createMockPokemon(401, 'ノーマル', {});
+    
+    let battleInfo = createInitialBattleInfo([sleepingPokemon], [normalPokemon]);
+    let maxTurns = 10;
+    
+    for (let turn = 1; turn <= maxTurns; turn++) {
+        if (!battleInfo.battlePokemons?.PlayerBattlePokemons[0]) break;
+        
+        const pokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+        
+        console.log(`ターン${turn}前: 状態 ${pokemon?.ailment ?? 'unknown'}`);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            battleInfo = result.battleInfo;
+            const pokemonAfter = battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter) {
+                console.log(`ターン${turn}後: 状態 ${pokemonAfter.ailment ?? 'unknown'} (行動可能: ${result.actionFlag})`);
+                
+                if ((pokemonAfter.ailment ?? '') === 'none') {
+                    console.log(`✓ ポケモンが${turn}ターン目に目を覚ましました`);
+                    break;
+                }
+            }
+        }
+        
+        if (turn === maxTurns) {
+            console.log('✗ 最大ターン数に達しても起床しませんでした');
+        }
+    }
+};
+
+// 火傷状態の複数ターンテスト
+const testBurnMultipleTurns = async () => {
+    console.log('火傷状態のポケモンを5ターン処理してダメージを確認');
+    
+    const burnedPokemon = createMockPokemon(500, 'やけどテスト', { 
+        ailment: 'burn', 
+        max_hp: 100, 
+        current_hp: 100 
+    });
+    const normalPokemon = createMockPokemon(501, 'ノーマル', {});
+    
+    let battleInfo = createInitialBattleInfo([burnedPokemon], [normalPokemon]);
+    
+    for (let turn = 1; turn <= 5; turn++) {
+        if (!battleInfo.battlePokemons?.PlayerBattlePokemons[0]) break;
+        
+        const pokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+        const hpBefore = pokemon?.current_hp ?? 0;
+        
+        console.log(`ターン${turn}前: HP ${hpBefore}/${pokemon?.max_hp ?? 100} (状態: ${pokemon?.ailment ?? 'unknown'})`);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            battleInfo = result.battleInfo;
+            const pokemonAfter = battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter) {
+                const damage = hpBefore - (pokemonAfter.current_hp ?? 0);
+                console.log(`ターン${turn}後: HP ${pokemonAfter.current_hp ?? 0}/${pokemonAfter.max_hp ?? 100} (ダメージ: ${damage}) (状態: ${pokemonAfter.ailment ?? 'unknown'})`);
+                
+                if ((pokemonAfter.current_hp ?? 0) <= 0) {
+                    console.log('✓ ポケモンが火傷で倒れました');
+                    break;
+                }
+            }
+        }
+    }
+};
+
+// 凍り状態の複数ターンテスト
+const testFreezeMultipleTurns = async () => {
+    console.log('凍り状態のポケモンを処理して回復するまで確認');
+    
+    const frozenPokemon = createMockPokemon(600, 'こおりテスト', { 
+        ailment: 'freeze', 
+        max_hp: 100, 
+        current_hp: 100 
+    });
+    const normalPokemon = createMockPokemon(601, 'ノーマル', {});
+    
+    let battleInfo = createInitialBattleInfo([frozenPokemon], [normalPokemon]);
+    let maxTurns = 10;
+    
+    for (let turn = 1; turn <= maxTurns; turn++) {
+        if (!battleInfo.battlePokemons?.PlayerBattlePokemons[0]) break;
+        
+        const pokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+        
+        console.log(`ターン${turn}前: 状態 ${pokemon?.ailment ?? 'unknown'}`);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            battleInfo = result.battleInfo;
+            const pokemonAfter = battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter) {
+                console.log(`ターン${turn}後: 状態 ${pokemonAfter.ailment ?? 'unknown'} (行動可能: ${result.actionFlag})`);
+                
+                if ((pokemonAfter.ailment ?? '') === 'none') {
+                    console.log(`✓ ポケモンが${turn}ターン目に凍えが解けました`);
+                    break;
+                }
+            }
+        }
+        
+        if (turn === maxTurns) {
+            console.log('✗ 最大ターン数に達しても凍えが解けませんでした');
+        }
+    }
+};
+
+// 混乱状態の複数ターンテスト
+const testConfusionMultipleTurns = async () => {
+    console.log('混乱状態のポケモンを10回処理して自傷・行動不能率を確認');
+    
+    let selfDamageCount = 0;
+    let cannotActCount = 0;
+    let totalTests = 10;
+    
+    for (let test = 1; test <= totalTests; test++) {
+        const confusedPokemon = createMockPokemon(700 + test, 'こんらんテスト', { 
+            ailment: 'confusion', 
+            max_hp: 100, 
+            current_hp: 100 
+        });
+        const normalPokemon = createMockPokemon(800 + test, 'ノーマル', {});
+        
+        const battleInfo = createInitialBattleInfo([confusedPokemon], [normalPokemon]);
+        const hpBefore = confusedPokemon.current_hp ?? 0;
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            const pokemonAfter = result.battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter) {
+                const damage = hpBefore - (pokemonAfter.current_hp ?? 0);
+                
+                if (damage > 0) {
+                    selfDamageCount++;
+                    console.log(`テスト${test}: 自傷ダメージ ${damage}`);
+                } else if (!result.actionFlag) {
+                    cannotActCount++;
+                    console.log(`テスト${test}: 混乱で行動不能`);
+                } else {
+                    console.log(`テスト${test}: 正常に行動可能`);
+                }
+            }
+        }
+    }
+    
+    const selfDamageRate = (selfDamageCount / totalTests) * 100;
+    const cannotActRate = (cannotActCount / totalTests) * 100;
+    
+    console.log(`自傷ダメージ: ${selfDamageCount}/${totalTests} (${selfDamageRate.toFixed(1)}%)`);
+    console.log(`行動不能: ${cannotActCount}/${totalTests} (${cannotActRate.toFixed(1)}%)`);
+    console.log(`理論値: 各50%の確率で自傷ダメージまたは行動不能`);
+    
+    if ((selfDamageRate + cannotActRate) >= 30) {
+        console.log('✓ 混乱の効果が妥当な範囲内です');
+    } else {
+        console.log('✗ 混乱の効果が想定外です');
+    }
+};
+
+// 状態異常治癒テスト
+const testAilmentRecovery = async () => {
+    console.log('状態異常の自然回復をテスト');
+    
+    // 眠りから目覚めるテスト
+    let recoverCount = 0;
+    let totalTests = 20;
+    
+    for (let test = 1; test <= totalTests; test++) {
+        const sleepingPokemon = createMockPokemon(900 + test, 'すいみん回復テスト', { 
+            ailment: 'sleep', 
+            max_hp: 100, 
+            current_hp: 100 
+        });
+        const normalPokemon = createMockPokemon(1000 + test, 'ノーマル', {});
+        
+        const battleInfo = createInitialBattleInfo([sleepingPokemon], [normalPokemon]);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            const pokemonAfter = result.battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter && (pokemonAfter.ailment ?? '') === 'none') {
+                recoverCount++;
+            }
+        }
+    }
+    
+    const recoverRate = (recoverCount / totalTests) * 100;
+    console.log(`眠りからの回復: ${recoverCount}/${totalTests} (${recoverRate.toFixed(1)}%)`);
+    console.log(`理論値: 40% (60%の確率で眠り続ける)`);
+    
+    if (recoverRate >= 20 && recoverRate <= 60) {
+        console.log('✓ 眠りからの回復率が妥当な範囲内です');
+    } else {
+        console.log('✗ 眠りからの回復率が想定外です');
+    }
+    
+    // 凍りから回復するテスト
+    recoverCount = 0;
+    
+    for (let test = 1; test <= totalTests; test++) {
+        const frozenPokemon = createMockPokemon(1100 + test, 'こおり回復テスト', { 
+            ailment: 'freeze', 
+            max_hp: 100, 
+            current_hp: 100 
+        });
+        const normalPokemon = createMockPokemon(1200 + test, 'ノーマル', {});
+        
+        const battleInfo = createInitialBattleInfo([frozenPokemon], [normalPokemon]);
+        
+        const result = ailmentHandler(battleInfo, "player");
+        
+        if (result && result.battleInfo) {
+            const pokemonAfter = result.battleInfo.battlePokemons?.PlayerBattlePokemons[0];
+            
+            if (pokemonAfter && (pokemonAfter.ailment ?? '') === 'none') {
+                recoverCount++;
+            }
+        }
+    }
+    
+    const freezeRecoverRate = (recoverCount / totalTests) * 100;
+    console.log(`凍りからの回復: ${recoverCount}/${totalTests} (${freezeRecoverRate.toFixed(1)}%)`);
+    console.log(`理論値: 40% (60%の確率で凍り続ける)`);
+    
+    if (freezeRecoverRate >= 20 && freezeRecoverRate <= 60) {
+        console.log('✓ 凍りからの回復率が妥当な範囲内です');
+    } else {
+        console.log('✗ 凍りからの回復率が想定外です');
+    }
+};
+
 // --- 詳細テスト関数 ---
 const testAttackHandler = async () => {
     console.log('\n=== 攻撃ハンドラーテスト ===');
@@ -323,15 +755,15 @@ const testAttackHandler = async () => {
     
     // 物理攻撃テスト
     console.log('物理攻撃テスト開始');
-    console.log(`攻撃前 - ${defender.name} HP: ${defender.current_hp}/${defender.max_hp}`);
+    console.log(`攻撃前 - ${defender.name ?? 'N/A'} HP: ${defender.current_hp ?? 0}/${defender.max_hp ?? 100}`);
     
     const physicalMove = MOCK_MOVES.find(m => m.damage_class === 'physical') || MOCK_MOVES[0];
     const afterPhysical = attackHandler(battleInfo, "player", physicalMove);
     
     if (afterPhysical && afterPhysical.battlePokemons && afterPhysical.battlePokemons.EnemyBattlePokemons[0]) {
         const defenderAfter = afterPhysical.battlePokemons.EnemyBattlePokemons[0];
-        console.log(`攻撃後 - ${defenderAfter.name} HP: ${defenderAfter.current_hp}/${defenderAfter.max_hp}`);
-        console.log(`ダメージ: ${defender.current_hp - defenderAfter.current_hp}`);
+        console.log(`攻撃後 - ${defenderAfter?.name ?? 'N/A'} HP: ${defenderAfter?.current_hp ?? 0}/${defenderAfter?.max_hp ?? 100}`);
+        console.log(`ダメージ: ${(defender.current_hp ?? 0) - (defenderAfter?.current_hp ?? 0)}`);
         console.log('✓ 物理攻撃が正常に処理されました');
     } else {
         console.log('✗ 物理攻撃の処理に失敗しました');
@@ -342,15 +774,15 @@ const testAttackHandler = async () => {
     const defender2 = createMockPokemon(3, 'ディフェンダー2', { defence: 50, special_defence: 50, max_hp: 100, current_hp: 100 });
     const battleInfo2 = createInitialBattleInfo([attacker], [defender2]);
     
-    console.log(`攻撃前 - ${defender2.name} HP: ${defender2.current_hp}/${defender2.max_hp}`);
+    console.log(`攻撃前 - ${defender2.name ?? 'N/A'} HP: ${defender2.current_hp ?? 0}/${defender2.max_hp ?? 100}`);
     
     const specialMove = MOCK_MOVES.find(m => m.damage_class === 'special') || MOCK_MOVES[2];
     const afterSpecial = attackHandler(battleInfo2, "player", specialMove);
     
     if (afterSpecial && afterSpecial.battlePokemons && afterSpecial.battlePokemons.EnemyBattlePokemons[0]) {
         const defender2After = afterSpecial.battlePokemons.EnemyBattlePokemons[0];
-        console.log(`攻撃後 - ${defender2After.name} HP: ${defender2After.current_hp}/${defender2After.max_hp}`);
-        console.log(`ダメージ: ${defender2.current_hp - defender2After.current_hp}`);
+        console.log(`攻撃後 - ${defender2After?.name ?? 'N/A'} HP: ${defender2After?.current_hp ?? 0}/${defender2After?.max_hp ?? 100}`);
+        console.log(`ダメージ: ${(defender2.current_hp ?? 0) - (defender2After?.current_hp ?? 0)}`);
         console.log('✓ 特殊攻撃が正常に処理されました');
     } else {
         console.log('✗ 特殊攻撃の処理に失敗しました');
@@ -371,16 +803,16 @@ const testAilmentHandler = async () => {
     
     const battleInfo = createInitialBattleInfo([poisonedPokemon], [normalPokemon]);
     
-    console.log(`処理前 - ${poisonedPokemon.name} HP: ${poisonedPokemon.current_hp}/${poisonedPokemon.max_hp} (状態: ${poisonedPokemon.ailment})`);
+    console.log(`処理前 - ${poisonedPokemon.name ?? 'N/A'} HP: ${poisonedPokemon.current_hp ?? 0}/${poisonedPokemon.max_hp ?? 100} (状態: ${poisonedPokemon.ailment ?? 'unknown'})`);
     
     const result = ailmentHandler(battleInfo, "player");
     
     if (result && result.battleInfo && result.battleInfo.battlePokemons && result.battleInfo.battlePokemons.PlayerBattlePokemons[0]) {
         const pokemonAfter = result.battleInfo.battlePokemons.PlayerBattlePokemons[0];
-        console.log(`処理後 - ${pokemonAfter.name} HP: ${pokemonAfter.current_hp}/${pokemonAfter.max_hp} (状態: ${pokemonAfter.ailment})`);
+        console.log(`処理後 - ${pokemonAfter?.name ?? 'N/A'} HP: ${pokemonAfter?.current_hp ?? 0}/${pokemonAfter?.max_hp ?? 100} (状態: ${pokemonAfter?.ailment ?? 'unknown'})`);
         console.log(`行動可能フラグ: ${result.actionFlag}`);
         
-        if (pokemonAfter.current_hp < poisonedPokemon.current_hp) {
+        if ((pokemonAfter?.current_hp ?? 0) < (poisonedPokemon.current_hp ?? 0)) {
             console.log('✓ 毒ダメージが正常に処理されました');
         } else {
             console.log('✗ 毒ダメージが処理されませんでした');
@@ -399,7 +831,7 @@ const testAilmentHandler = async () => {
     
     const battleInfo2 = createInitialBattleInfo([paralyzedPokemon], [normalPokemon]);
     
-    console.log(`処理前 - ${paralyzedPokemon.name} (状態: ${paralyzedPokemon.ailment})`);
+    console.log(`処理前 - ${paralyzedPokemon.name ?? 'N/A'} (状態: ${paralyzedPokemon.ailment ?? 'unknown'})`);
     
     const result2 = ailmentHandler(battleInfo2, "player");
     
@@ -413,6 +845,39 @@ const testAilmentHandler = async () => {
     } else {
         console.log('✗ 麻痺状態の処理に失敗しました');
     }
+};
+
+// 詳細な状態異常テスト（複数ターンにわたる状態異常の動作検証）
+const testDetailedAilmentStates = async () => {
+    console.log('\n=== 詳細状態異常テスト（複数ターン検証） ===');
+    
+    // 毒状態の複数ターンテスト
+    console.log('\n--- 毒状態 複数ターンテスト ---');
+    await testPoisonMultipleTurns();
+    
+    // 麻痺状態の複数回判定テスト
+    console.log('\n--- 麻痺状態 複数回判定テスト ---');
+    await testParalysisMultipleChecks();
+    
+    // 眠り状態の複数ターンテスト
+    console.log('\n--- 眠り状態 複数ターンテスト ---');
+    await testSleepMultipleTurns();
+    
+    // 火傷状態の複数ターンテスト
+    console.log('\n--- 火傷状態 複数ターンテスト ---');
+    await testBurnMultipleTurns();
+    
+    // 凍り状態の複数ターンテスト
+    console.log('\n--- 凍り状態 複数ターンテスト ---');
+    await testFreezeMultipleTurns();
+    
+    // 混乱状態の複数ターンテスト
+    console.log('\n--- 混乱状態 複数ターンテスト ---');
+    await testConfusionMultipleTurns();
+    
+    // 状態異常治癒テスト
+    console.log('\n--- 状態異常治癒テスト ---');
+    await testAilmentRecovery();
 };
 
 const testShiftHandler = async () => {
@@ -431,7 +896,7 @@ const testShiftHandler = async () => {
     console.log('交代前の手持ち状況:');
     if (battleInfo.battlePokemons) {
         battleInfo.battlePokemons.PlayerBattlePokemons.forEach((p, index) => {
-            if (p) console.log(`  ${index}: ${p.name} HP: ${p.current_hp}/${p.max_hp}`);
+            if (p) console.log(`  ${index}: ${p.name ?? 'N/A'} HP: ${p.current_hp ?? 0}/${p.max_hp ?? 100}`);
         });
     }
     
@@ -441,7 +906,7 @@ const testShiftHandler = async () => {
         console.log('\n交代後の手持ち状況:');
         if (shiftResult.battleInfo && shiftResult.battleInfo.battlePokemons) {
             shiftResult.battleInfo.battlePokemons.PlayerBattlePokemons.forEach((p, index) => {
-                if (p) console.log(`  ${index}: ${p.name} HP: ${p.current_hp}/${p.max_hp}`);
+                if (p) console.log(`  ${index}: ${p.name ?? 'N/A'} HP: ${p.current_hp ?? 0}/${p.max_hp ?? 100}`);
             });
         }
         console.log('✓ 交代が正常に処理されました');
@@ -525,8 +990,8 @@ const testBattleFlow = async () => {
             break;
         }
         
-        console.log(`プレイヤー: ${playerPokemon.name} HP:${playerPokemon.current_hp}/${playerPokemon.max_hp} 状態:${playerPokemon.ailment}`);
-        console.log(`相手: ${enemyPokemon.name} HP:${enemyPokemon.current_hp}/${enemyPokemon.max_hp} 状態:${enemyPokemon.ailment}`);
+        console.log(`プレイヤー: ${playerPokemon?.name ?? 'N/A'} HP:${playerPokemon?.current_hp ?? 0}/${playerPokemon?.max_hp ?? 100} 状態:${playerPokemon?.ailment ?? 'none'}`);
+        console.log(`相手: ${enemyPokemon?.name ?? 'N/A'} HP:${enemyPokemon?.current_hp ?? 0}/${enemyPokemon?.max_hp ?? 100} 状態:${enemyPokemon?.ailment ?? 'none'}`);
         
         // バトルアクション実行
         const randomAction = Math.random() < 0.8 ? 'fight' : 'shift'; // 80%で攻撃、20%で交代
@@ -567,8 +1032,8 @@ const testBattleFlow = async () => {
             break;
         }
         
-        const playerAlive = battleInfo.battlePokemons.PlayerBattlePokemons.some(p => p && p.current_hp > 0);
-        const enemyAlive = battleInfo.battlePokemons.EnemyBattlePokemons.some(p => p && p.current_hp > 0);
+        const playerAlive = battleInfo.battlePokemons.PlayerBattlePokemons.some(p => p && (p.current_hp ?? 0) > 0);
+        const enemyAlive = battleInfo.battlePokemons.EnemyBattlePokemons.some(p => p && (p.current_hp ?? 0) > 0);
         
         if (!playerAlive) {
             console.log('\n🎯 バトル終了: プレイヤー敗北');
@@ -591,11 +1056,11 @@ const testBattleFlow = async () => {
     console.log('プレイヤーチーム:');
     if (battleInfo.battlePokemons) {
         battleInfo.battlePokemons.PlayerBattlePokemons.forEach((p, i) => {
-            if (p) console.log(`  ${i+1}. ${p.name} HP:${p.current_hp}/${p.max_hp} 状態:${p.ailment}`);
+            if (p) console.log(`  ${i+1}. ${p.name ?? 'N/A'} HP:${p.current_hp ?? 0}/${p.max_hp ?? 100} 状態:${p.ailment ?? 'none'}`);
         });
         console.log('相手チーム:');
         battleInfo.battlePokemons.EnemyBattlePokemons.forEach((p, i) => {
-            if (p) console.log(`  ${i+1}. ${p.name} HP:${p.current_hp}/${p.max_hp} 状態:${p.ailment}`);
+            if (p) console.log(`  ${i+1}. ${p.name ?? 'N/A'} HP:${p.current_hp ?? 0}/${p.max_hp ?? 100} 状態:${p.ailment ?? 'none'}`);
         });
     }
 };

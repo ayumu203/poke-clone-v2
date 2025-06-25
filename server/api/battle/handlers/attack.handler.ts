@@ -4,7 +4,7 @@ import { Move } from "../../../type/move.type";
 
 export const attackHandler = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo => {
     // 必要データの確認
-    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || !move) {
+    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined || !move || move === undefined) {
         console.error("handleAttack: Required battle data or move data is missing");
         return null;
     }
@@ -24,7 +24,7 @@ export const attackHandler = (battleInfo: BattleInfo, playerOrEnemy: string, mov
         return null;
     }
 
-    if (!attackPokemon || !defencePokemon) {
+    if (!attackPokemon || attackPokemon === undefined || !defencePokemon || defencePokemon === undefined) {
         console.error("handleAttack: Attack or defence pokemon not found");
         return null;
     }

@@ -2,7 +2,7 @@ import { BattleInfo } from "../../../type/battle/battleInfo.type";
 import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
 
 export const shiftHandler = (battleInfo: BattleInfo, playerOrEnemy: string): { battleInfo: BattleInfo, sucsess: boolean } | null => {
-    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs) {
+    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined) {
         console.error("handleShift: Required battle data is missing or invalid");
         return null;
     }
@@ -11,7 +11,7 @@ export const shiftHandler = (battleInfo: BattleInfo, playerOrEnemy: string): { b
         ? battleInfo.battlePokemons.PlayerBattlePokemons 
         : battleInfo.battlePokemons.EnemyBattlePokemons;
 
-    const nextPokemonIndex = targetParty.findIndex((p, index) => index > 0 && p && p.current_hp > 0);
+    const nextPokemonIndex = targetParty.findIndex((p, index) => index > 0 && p && p !== undefined && p.current_hp > 0);
 
     if (nextPokemonIndex === -1) {
         return { battleInfo, sucsess: false };

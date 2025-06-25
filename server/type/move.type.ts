@@ -17,4 +17,4 @@ export type Move = {
     healing: number;
     drain: number;
     description: string;
-} | null;
+} | null | undefined;

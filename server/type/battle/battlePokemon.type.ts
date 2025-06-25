@@ -19,4 +19,4 @@ export type BattlePokemon = {
     move_list: number[],
     rank: Rank,
     ailment: string
-} | null;
+} | null | undefined;
