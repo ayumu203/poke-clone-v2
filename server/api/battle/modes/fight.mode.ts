@@ -45,7 +45,7 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
     let playerActionFlag = true;
     let enemyActionFlag = true;
 
-    if(command_id === -1) {
+    if (command_id === -1) {
         // コマンドが-1の場合は、プレイヤーの行動をスキップ
         playerActionFlag = false;
     }
@@ -119,6 +119,10 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
         if (!shiftResult?.sucsess) {
             // 戦闘終了処理
             console.log("戦闘終了処理: プレイヤーのポケモンが倒れました。");
+            if (battleInfo && battleInfo.battleResult) {
+                battleInfo.battleResult.isFinished = true;
+            }
+
         }
     }
 
@@ -127,8 +131,11 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
         let shiftResult;
         shiftResult = shiftHandler(battleInfo, "enemy");
         if (!shiftResult?.sucsess) {
-            // 戦闘終了処理 倒したポケモンに応じた経験値 レベルアップ処理
+            // 戦闘終了処理
             console.log("戦闘終了処理: 相手のポケモンが倒れました。");
+            if (battleInfo && battleInfo.battleResult) {
+                battleInfo.battleResult.isFinished = true;
+            }
         }
     }
 

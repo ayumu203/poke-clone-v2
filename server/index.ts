@@ -15,6 +15,9 @@ import { deleteALLPlayer } from './api/player/deleteAll';
 import { getMove } from './api/move/move';
 import { Move } from './types/core/move';
 import { battleInitService } from './api/battle/services/battle-init.service';
+import { battleInfoService } from './api/battle/services/battle-info.service';
+import { BattleInfo } from './types/battle/battle-info';
+import { BattleAction } from './types/battle/battle-action';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -122,6 +125,17 @@ app.post('/battle/init', async(req, res) => {
   const battleInfo = await battleInitService(player_id);
   
   res.status(200).json(battleInfo);
+});
+
+app.post('/battle/process', async (req, res) => {
+  const data = req.body as { action: BattleAction, battleInfo: BattleInfo  };
+  const action: BattleAction = data.action;
+  const battleInfo: BattleInfo = data.battleInfo;
+
+  const newBattleInfo = await battleInfoService(battleInfo,action);
+
+  res.status(200).json(newBattleInfo);
+  return;
 });
 
 // マスタデータ

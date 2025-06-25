@@ -1,9 +1,6 @@
 import { BattleAction } from "../../../types/battle/battle-action";
 import { BattleInfo } from "../../../types/battle/battle-info";
-import { BattleLogs } from "../../../types/battle/battle-logs";
 import { BattlePokemon } from "../../../types/battle/battle-pokemon";
-import { BattlePokemons } from "../../../types/battle/battle-pokemons";
-import { BattleResult } from "../../../types/battle/battle-result";
 import { fightMode } from "../modes/fight.mode";
 import { getMode } from "../modes/get.mode";
 import { switchMode } from "../modes/switch.mode";
@@ -13,7 +10,6 @@ export const battleInfoService = async (battleInfo: BattleInfo, battleAction: Ba
         console.error("getBattleInfo: Required battleInfo or battleAction is missing");
         return null;
     }
-
 
     const command_id: number = battleAction.command_id;
     switch (battleAction.action_name) {
@@ -39,6 +35,7 @@ export const battleInfoService = async (battleInfo: BattleInfo, battleAction: Ba
             break;
     }
 
+    battleInfo = aggregateBattleResult(battleInfo);
     return battleInfo;
 }
 
@@ -55,5 +52,6 @@ const aggregateBattleResult = (battleInfo: BattleInfo): BattleInfo => {
         })
         battleInfo.battleResult.gainExp = gainExp;
     }
-    return null;
+
+    return battleInfo;
 }
