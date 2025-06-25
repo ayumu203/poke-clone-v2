@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Pokemon } from "../../../type/pokemon.type";
+import { Pokemon } from "../../../types/core/pokemon";
 
 import { fetchPokemonEvolveLevel, fetchPokemonInfo, fetchPokemonName } from "./fetch";
 import { POKEMON_ID_BEGIN,POKEMON_ID_END } from "../../../const/pokemon_id.const";

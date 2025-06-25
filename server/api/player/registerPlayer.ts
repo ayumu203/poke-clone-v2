@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Player } from "../../type/player.type";
+import { Player } from "../../types/core/player";
 import { isPlayer } from "./isPlayer";
 
 const prisma = new PrismaClient();

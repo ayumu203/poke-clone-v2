@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { TeamPokemon } from "../../type/teamPokemon.type";
+import { TeamPokemon } from "../../types/core/team-pokemon";
 
 const prisma = new PrismaClient();
 

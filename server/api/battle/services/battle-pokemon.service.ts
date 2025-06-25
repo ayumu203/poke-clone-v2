@@ -1,9 +1,9 @@
-import { BattlePokemon } from "../../type/Battle/battlePokemon.type";
-import { Pokemon } from "../../type/pokemon.type";
-import { TeamPokemon } from "../../type/teamPokemon.type";
+import { BattlePokemon } from "../../../types/battle/battle-pokemon";
+import { Pokemon } from "../../../types/core/pokemon";
+import { TeamPokemon } from "../../../types/core/team-pokemon";
 
-export const getBattlePokemon = (pokemon: Pokemon, teamPokemon: TeamPokemon): BattlePokemon => {
-    if (pokemon && teamPokemon) {
+export const battlePokemonService = (pokemon: Pokemon, teamPokemon: TeamPokemon): BattlePokemon => {
+    if (pokemon && pokemon !== undefined && teamPokemon && teamPokemon !== undefined) {
         const max_hp = Math.floor(pokemon.base_hp * teamPokemon.level / 100 ) + 10;
         const attack = Math.floor(pokemon.base_attack * teamPokemon.level / 100) + 5;
         const defence = Math.floor(pokemon.base_defence * teamPokemon.level / 100) + 5;

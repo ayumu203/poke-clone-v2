@@ -1,4 +1,4 @@
-import { Move } from "../../../type/move.type";
+import { Move } from "../../../types/core/move";
 
 const fetchMove = async (url: string, headers: HeadersInit, move_id: number): Promise<Move> => {
     const response = await fetch(url);
