@@ -1,16 +1,16 @@
-import { POKEMON_ID_BEGIN, POKEMON_ID_END } from "../../const/pokemon_id.const";
-import { BattleInfo } from "../../type/Battle/battleInfo.type";
-import { BattleLogs } from "../../type/Battle/battleLogs.type";
-import { BattlePokemon } from "../../type/Battle/battlePokemon.type";
-import { BattlePokemons } from "../../type/Battle/battlePokemons.type"
-import { BattleResult } from "../../type/Battle/battleResult.type";
-import { Pokemon } from "../../type/pokemon.type";
-import { TeamPokemon } from "../../type/teamPokemon.type";
-import { getPokemon } from "../pokemon/pokemon";
-import { getTeamPokemon } from "../teamPokemon/getTeamPokemon";
-import { getBattlePokemon } from "./getBattlePokemon";
+import { POKEMON_ID_BEGIN, POKEMON_ID_END } from "../../../const/pokemon_id.const";
+import { BattleInfo } from "../../../type/battle/battleInfo.type";
+import { BattleLogs } from "../../../type/battle/battleLogs.type";
+import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
+import { BattlePokemons } from "../../../type/battle/battlePokemons.type"
+import { BattleResult } from "../../../type/battle/battleResult.type";
+import { Pokemon } from "../../../type/pokemon.type";
+import { TeamPokemon } from "../../../type/teamPokemon.type";
+import { getPokemon } from "../../pokemon/pokemon";
+import { getTeamPokemon } from "../../teamPokemon/getTeamPokemon";
+import { battlePokemonService } from "./battle-pokemon.service";
 
-export const initBattleInfo = async (player_id: string): Promise<BattleInfo> => {
+export const battleInitService = async (player_id: string): Promise<BattleInfo> => {
     // 手持ちポケモンの生成
     const battlePokemons: BattlePokemons = {
         PlayerBattlePokemons: [],
@@ -23,7 +23,7 @@ export const initBattleInfo = async (player_id: string): Promise<BattleInfo> => 
         if( !teamPokemon && i === 0) return null;
         if (!teamPokemon) continue;
         const pokemon: Pokemon = await getPokemon(teamPokemon.pokemon_id);
-        const battlePokemon: BattlePokemon = getBattlePokemon(pokemon, teamPokemon);
+        const battlePokemon: BattlePokemon = battlePokemonService(pokemon, teamPokemon);
         if (playerBattlePokemons) {
             playerBattlePokemons.push(battlePokemon);
         }
@@ -45,7 +45,7 @@ export const initBattleInfo = async (player_id: string): Promise<BattleInfo> => 
             exp: 0,
             move_list: pokemon.move_list.slice(0, 4)
         }
-        const battlePokemon: BattlePokemon = getBattlePokemon(pokemon, teamPokemon);
+        const battlePokemon: BattlePokemon = battlePokemonService(pokemon, teamPokemon);
         if (battlePokemon)EnemyBattlePokemons.push(battlePokemon);
     }
 

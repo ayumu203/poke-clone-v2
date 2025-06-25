@@ -14,7 +14,7 @@ import { deleteALLTeamPokemon } from './api/teamPokemon/deleteAll';
 import { deleteALLPlayer } from './api/player/deleteAll';
 import { getMove } from './api/move/move';
 import { Move } from './type/move.type';
-import { initBattleInfo } from './api/Battle/initBattleInfo';
+import { battleInitService } from './api/battle/services/battle-init.service';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -119,7 +119,7 @@ app.post('/battle/init', async(req, res) => {
     return;
   }
 
-  const battleInfo = await initBattleInfo(player_id);
+  const battleInfo = await battleInitService(player_id);
   
   res.status(200).json(battleInfo);
 });
