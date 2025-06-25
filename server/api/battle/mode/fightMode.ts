@@ -1,28 +1,27 @@
-import { BattleInfo } from "../../../types/battle/battle-info";
-import { BattlePokemon } from "../../../types/battle/battle-pokemon";
-import { Move } from "../../../types/core/move";
+import { BattleInfo } from "../../../type/battle/battleInfo.type";
+import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
+import { Move } from "../../../type/move.type";
 import { getMove } from "../../move/move";
-import { ailmentHandler } from "../handlers/ailment.handler";
-import { applyAilmentHandler } from "../handlers/apply-ailment.handler";
-import { attackHandler } from "../handlers/attack.handler";
-import { shiftHandler } from "../handlers/shift.handler";
+import { handleAilment } from "../module/handleAilment";
+import { handleAttack } from "../module/handleAttack";
+import { handleShift } from "../module/handleShift";
 
-export const fightMode = async (battleInfo: BattleInfo, command_id: number): Promise<BattleInfo> => {
+export const handleFight = async (battleInfo: BattleInfo, command_id: number): Promise<BattleInfo> => {
     // 必要データの確認
-    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined) {
+    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs) {
         console.error("handleFight: Required battle data is missing or invalid");
         return null;
     }
     // コマンドが許容範囲を超えていないが確認
-    if (command_id < -1 || command_id > 3) {
+    if (command_id < 0 || command_id > 3) {
         console.error("handleFight: Invalid command_id, must be between 0 and 3");
         return null;
     }
 
     // 各戦闘ポケモンの取得
-    const playerBattlePokemon: BattlePokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
-    const enemyBattlePokemon: BattlePokemon = battleInfo.battlePokemons.EnemyBattlePokemons[0];
-    if (!playerBattlePokemon || playerBattlePokemon === undefined || !enemyBattlePokemon || enemyBattlePokemon === undefined) {
+    const playerBattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
+    const enemyBattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.EnemyBattlePokemons[0];
+    if (!playerBattlePokemon || !enemyBattlePokemon) {
         console.error("handleFight: Player or enemy battle pokemon not found");
         return null;
     }
@@ -36,31 +35,20 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
     const playerMove: Move = await getMove(player_move_id);
     const enemyMove: Move = await getMove(enemyBattlePokemon_move_id);
 
-    if (!playerMove || playerMove === undefined || !enemyMove || enemyMove === undefined) {
-        console.error("fightMode: Failed to get move data");
-        return null;
-    }
-
     // 手持ち状態異常の判定
     let playerActionFlag = true;
     let enemyActionFlag = true;
-
-    if(command_id === -1) {
-        // コマンドが-1の場合は、プレイヤーの行動をスキップ
-        playerActionFlag = false;
-    }
-
-    const playerAilmentResult = ailmentHandler(battleInfo, "player");
-    if (!playerAilmentResult || playerAilmentResult === undefined) {
-        console.error("fightMode: Failed to handle player ailment");
+    const playerAilmentResult = handleAilment(battleInfo, "player");
+    if (!playerAilmentResult) {
+        console.error("handleFight: Failed to handle player ailment");
         return null;
     }
     battleInfo = playerAilmentResult.battleInfo;
     playerActionFlag = playerAilmentResult.actionFlag;
 
     // 相手の状態異常の判定
-    const enemyAilmentData = ailmentHandler(battleInfo, "enemy");
-    if (!enemyAilmentData || enemyAilmentData === undefined) {
+    const enemyAilmentData = handleAilment(battleInfo, "enemy");
+    if (!enemyAilmentData) {
         console.error("handleFight: Failed to handle enemy ailment");
         return null;
     }
@@ -72,14 +60,14 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
     // HP確認処理
     if (playerBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
-        let shiftResult = shiftHandler(battleInfo, "player");
+        let shiftResult = handleShift(battleInfo, "player");
         if (!shiftResult?.sucsess) {
             // 戦闘終了処理 
         }
     }
     else if (enemyBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
-        let shiftResult = shiftHandler(battleInfo, "enemy");
+        let shiftResult = handleShift(battleInfo, "enemy");
         if (!shiftResult?.sucsess) {
             // 戦闘終了処理 倒したポケモンに応じた経験値 レベルアップ処理
         }
@@ -90,32 +78,28 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
         // プレイヤーの攻撃処理
         if (playerActionFlag && playerBattlePokemon.current_hp > 0) {
             // 攻撃技の処理
-            if (playerMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "player", playerMove);
-            if (playerMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "player", playerMove);
+            if (playerMove?.category.includes("damage")) battleInfo = handleAttack(battleInfo, "player", playerMove);
         }
         // 相手の攻撃処理
         if (enemyActionFlag && enemyBattlePokemon.current_hp > 0) {
-            if (playerMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "enemy", enemyMove);
-            if (enemyMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "enemy", enemyMove);
+            if (playerMove?.category.includes("damage")) battleInfo = handleAttack(battleInfo, "enemy", enemyMove);
         }
     }
     else if (playerBattlePokemon.speed < enemyBattlePokemon.speed) {
         // 相手の攻撃処理
         if (enemyActionFlag && enemyBattlePokemon.current_hp > 0) {
-            if (playerMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "enemy", enemyMove);
-            if (enemyMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "enemy", enemyMove);
+            if (playerMove?.category.includes("damage")) battleInfo = handleAttack(battleInfo, "enemy", enemyMove);
         }
         // プレイヤーの攻撃処理
         if (playerActionFlag && playerBattlePokemon.current_hp > 0) {
-            if (playerMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "player", playerMove);
-            if (playerMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "player", playerMove);
+            if (playerMove?.category.includes("damage")) battleInfo = handleAttack(battleInfo, "player", playerMove);
         }
     }
 
     // HP確認処理
     if (playerBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
-        let shiftResult = shiftHandler(battleInfo, "player");
+        let shiftResult = handleShift(battleInfo, "player");
         if (!shiftResult?.sucsess) {
             // 戦闘終了処理
             console.log("戦闘終了処理: プレイヤーのポケモンが倒れました。");
@@ -125,7 +109,7 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
     if (enemyBattlePokemon.current_hp <= 0) {
         // 交代処理 または 戦闘終了処理
         let shiftResult;
-        shiftResult = shiftHandler(battleInfo, "enemy");
+        shiftResult = handleShift(battleInfo, "enemy");
         if (!shiftResult?.sucsess) {
             // 戦闘終了処理 倒したポケモンに応じた経験値 レベルアップ処理
             console.log("戦闘終了処理: 相手のポケモンが倒れました。");

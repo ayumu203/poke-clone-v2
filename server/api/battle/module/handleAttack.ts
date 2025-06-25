@@ -1,10 +1,10 @@
-import { BattleInfo } from "../../../types/battle/battle-info";
-import { BattlePokemon } from "../../../types/battle/battle-pokemon";
-import { Move } from "../../../types/core/move";
+import { BattleInfo } from "../../../type/battle/battleInfo.type";
+import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
+import { Move } from "../../../type/move.type";
 
-export const attackHandler = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo => {
+export const handleAttack = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo => {
     // 必要データの確認
-    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined || !move || move === undefined) {
+    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || !move) {
         console.error("handleAttack: Required battle data or move data is missing");
         return null;
     }
@@ -24,7 +24,7 @@ export const attackHandler = (battleInfo: BattleInfo, playerOrEnemy: string, mov
         return null;
     }
 
-    if (!attackPokemon || attackPokemon === undefined || !defencePokemon || defencePokemon === undefined) {
+    if (!attackPokemon || !defencePokemon) {
         console.error("handleAttack: Attack or defence pokemon not found");
         return null;
     }
@@ -70,7 +70,7 @@ const calcDamage = (attackPokemon: BattlePokemon, defencePokemon: BattlePokemon,
     if (attackPokemon.current_hp < 0) {
         attackPokemon.current_hp = 0;
     }
-    const log = `${attackPokemon.name}の${move.name}.${attackPokemon.name}は${defencePokemon.name}に${damage}のダメージを与えた！\n`;
+    const log = `${attackPokemon.name}の${move.name}.${attackPokemon.name}は${defencePokemon.name}に${damage}のダメージを与えた！`;
 
     return { defencePokemon, log };
 

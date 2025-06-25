@@ -1,5 +1,5 @@
-import { BattleInfo } from "../../../type/battle/battleInfo.type";
-import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
+import { BattleInfo } from "../../../types/battle/battle-info";
+import { BattlePokemon } from "../../../types/battle/battle-pokemon";
 
 export const shiftHandler = (battleInfo: BattleInfo, playerOrEnemy: string): { battleInfo: BattleInfo, sucsess: boolean } | null => {
     if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined) {

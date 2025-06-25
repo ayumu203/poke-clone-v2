@@ -1,4 +1,4 @@
-import { Pokemon } from "../../../type/pokemon.type";
+import { Pokemon } from "../../../types/core/pokemon";
 
 // 外部APIから必要データを取得するAPI
 // マスタデータの変更で使用し、ユーザの使用範囲では使われない.

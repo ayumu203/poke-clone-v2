@@ -1,31 +1,31 @@
-import { BattleInfo } from "../../../types/battle/battle-info";
-import { BattlePokemon } from "../../../types/battle/battle-pokemon";
+import { BattleInfo } from "../../../type/battle/battleInfo.type";
+import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
 
-export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): { battleInfo: BattleInfo, actionFlag: boolean } | null => {
+export const handleAilment = (battleInfo: BattleInfo, playerOrEnemy: string): { battleInfo: BattleInfo, actionFlag: boolean } | null => {
     // 必要データの確認
-    if (!battleInfo || battleInfo === undefined || !battleInfo.battlePokemons || battleInfo.battlePokemons === undefined || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs || battleInfo.battleLogs === undefined) {
+    if (!battleInfo || !battleInfo.battlePokemons || !battleInfo.battlePokemons.PlayerBattlePokemons || !battleInfo.battlePokemons.EnemyBattlePokemons || !battleInfo.battleLogs) {
         console.error("handleAilment: Required battle data is missing or invalid");
         return null;
     }
 
     // 各戦闘ポケモンの取得
-    let BattlePokemon: BattlePokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+    let BattlePokemon: BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
     if (playerOrEnemy === "player") {
         if (!battleInfo.battlePokemons.PlayerBattlePokemons || battleInfo.battlePokemons.PlayerBattlePokemons.length === 0) {
             console.error("handleAilment: Player battle pokemon not found");
             return null;
         }
-        BattlePokemon = battleInfo.battlePokemons.PlayerBattlePokemons[0];
+        BattlePokemon = battleInfo!.battlePokemons!.PlayerBattlePokemons[0];
     }
     else if (playerOrEnemy === "enemy") {
         if (!battleInfo.battlePokemons.EnemyBattlePokemons || battleInfo.battlePokemons.EnemyBattlePokemons.length === 0) {
             console.error("handleAilment: Enemy battle pokemon not found");
             return null;
         }
-        BattlePokemon = battleInfo.battlePokemons.EnemyBattlePokemons[0];
+        BattlePokemon = battleInfo!.battlePokemons!.EnemyBattlePokemons[0];
     }
 
-    if (!BattlePokemon || BattlePokemon === undefined) {
+    if (!BattlePokemon) {
         console.error("handleAilment: Battle pokemon is not available");
         return null;
     }
@@ -39,11 +39,11 @@ export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): {
         if (sleep_random_number > 0.6) {
             BattlePokemon.ailment = "none";
             actionFlag = true;
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は目を覚ました！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は目を覚ました！`;
         }
         else {
             actionFlag = false;
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は眠っている！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は眠っている！`;
         }
     }
     else if (BattlePokemon.ailment === "paralysis") {
@@ -53,7 +53,7 @@ export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): {
         }
         else {
             actionFlag = false;
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は麻痺して動けない！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は麻痺して動けない！`;
         }
     }
     else if (BattlePokemon.ailment === "freeze") {
@@ -61,11 +61,11 @@ export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): {
         if (freeze_random_number > 0.6) {
             BattlePokemon.ailment = "none";
             actionFlag = true;
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}の凍えが解けた！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}の凍えが解けた！`;
         }
         else {
             actionFlag = false;
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は凍えている！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は凍えている！`;
         }
     }
     else if (BattlePokemon.ailment === "poison") {
@@ -73,11 +73,11 @@ export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): {
         if (BattlePokemon.current_hp <= 0) {
             BattlePokemon.current_hp = 0;
             BattlePokemon.ailment = "none";
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は毒で倒れた！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は毒で倒れた！`;
             actionFlag = false;
         }
         else {
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は毒でダメージを受けた！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は毒でダメージを受けた！`;
         }
     }
     else if (BattlePokemon.ailment === "burn") {
@@ -85,11 +85,11 @@ export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): {
         if (BattlePokemon.current_hp <= 0) {
             BattlePokemon.current_hp = 0;
             BattlePokemon.ailment = "none";
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}はやけどで倒れた！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}はやけどで倒れた！`;
             actionFlag = false;
         }
         else {
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}はやけどでダメージを受けた！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}はやけどでダメージを受けた！`;
         }
     }
     else if (BattlePokemon.ailment === "confusion") {
@@ -99,15 +99,15 @@ export const ailmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string): {
             if (BattlePokemon.current_hp <= 0) {
                 BattlePokemon.current_hp = 0;
                 BattlePokemon.ailment = "none";
-                battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は混乱で倒れた！\n`;
+                battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は混乱で倒れた！`;
                 actionFlag = false;
             }
             else {
-                battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は混乱してダメージを受けた！\n`;
+                battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は混乱してダメージを受けた！`;
             }
         }
         else {
-            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は混乱して攻撃できなかった！\n`;
+            battleInfo.battleLogs.playerPokemonLog = `${BattlePokemon.name}は混乱して攻撃できなかった！`;
             actionFlag = false;
         }
     }

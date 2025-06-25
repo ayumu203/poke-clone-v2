@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { getPokemon } from "../pokemon/pokemon";
 import { getMove } from "../move/move";
 import { MAX_MOVE_COUNT } from "../../const/move_count.const";
-import { Move } from "../../type/move.type";
-import { Pokemon } from "../../type/pokemon.type";
-import { TeamPokemon } from "../../type/teamPokemon.type";
+import { Move } from "../../types/core/move";
+import { Pokemon } from "../../types/core/pokemon";
+import { TeamPokemon } from "../../types/core/team-pokemon";
 
 const prisma = new PrismaClient();
 

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { fetchMoveInfo } from "./fetch";
-import { Move } from "../../../type/move.type";
+import { Move } from "../../../types/core/move";
 
 
 const prisma = new PrismaClient();

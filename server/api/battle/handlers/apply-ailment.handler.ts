@@ -1,6 +1,6 @@
-import { BattleInfo } from "../../../type/battle/battleInfo.type";
-import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
-import { Move } from "../../../type/move.type";
+import { BattleInfo } from "../../../types/battle/battle-info";
+import { BattlePokemon } from "../../../types/battle/battle-pokemon";
+import { Move } from "../../../types/core/move";
 
 export const applyAilmentHandler = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo | null => {
     // 必要データの確認

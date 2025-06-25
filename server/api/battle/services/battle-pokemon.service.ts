@@ -1,6 +1,6 @@
-import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
-import { Pokemon } from "../../../type/pokemon.type";
-import { TeamPokemon } from "../../../type/teamPokemon.type";
+import { BattlePokemon } from "../../../types/battle/battle-pokemon";
+import { Pokemon } from "../../../types/core/pokemon";
+import { TeamPokemon } from "../../../types/core/team-pokemon";
 
 export const battlePokemonService = (pokemon: Pokemon, teamPokemon: TeamPokemon): BattlePokemon => {
     if (pokemon && pokemon !== undefined && teamPokemon && teamPokemon !== undefined) {

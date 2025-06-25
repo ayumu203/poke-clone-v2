@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { Player } from './type/player.type';
+import { Player } from './types/core/player';
 import { getPlayer } from './api/player/getPlayer';
 import { isPlayer } from './api/player/isPlayer';
 import { registerPlayer } from './api/player/registerPlayer';
-import { Pokemon } from './type/pokemon.type';
+import { Pokemon } from './types/core/pokemon';
 import { FIRST_POKEMON_ID_ARRAY } from './const/pokemon_id.const';
 import { getPokemon } from './api/pokemon/pokemon';
 import { isTeamPokemon } from './api/teamPokemon/isTeamPokemon';
@@ -13,7 +13,7 @@ import { getTeamPokemon } from './api/teamPokemon/getTeamPokemon';
 import { deleteALLTeamPokemon } from './api/teamPokemon/deleteAll';
 import { deleteALLPlayer } from './api/player/deleteAll';
 import { getMove } from './api/move/move';
-import { Move } from './type/move.type';
+import { Move } from './types/core/move';
 import { battleInitService } from './api/battle/services/battle-init.service';
 
 const app = express();

@@ -1,8 +1,9 @@
 import { Pokemon } from "../pokemon.type";
+import { BattlePokemon } from "./battlePokemon.type";
 
 export type BattleResult = {
     isFinished: boolean,
     totalTurn: number,
     gainExp: number,
-    gainPokemon: Pokemon
+    gainPokemon: BattlePokemon
 } | null | undefined;

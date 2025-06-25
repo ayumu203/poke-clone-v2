@@ -1,11 +1,11 @@
 import { POKEMON_ID_BEGIN, POKEMON_ID_END } from "../../../const/pokemon_id.const";
-import { BattleInfo } from "../../../type/battle/battleInfo.type";
-import { BattleLogs } from "../../../type/battle/battleLogs.type";
-import { BattlePokemon } from "../../../type/battle/battlePokemon.type";
-import { BattlePokemons } from "../../../type/battle/battlePokemons.type"
-import { BattleResult } from "../../../type/battle/battleResult.type";
-import { Pokemon } from "../../../type/pokemon.type";
-import { TeamPokemon } from "../../../type/teamPokemon.type";
+import { BattleInfo } from "../../../types/battle/battle-info";
+import { BattleLogs } from "../../../types/battle/battle-logs";
+import { BattlePokemon } from "../../../types/battle/battle-pokemon";
+import { BattlePokemons } from "../../../types/battle/battle-pokemons"
+import { BattleResult } from "../../../types/battle/battle-result";
+import { Pokemon } from "../../../types/core/pokemon";
+import { TeamPokemon } from "../../../types/core/team-pokemon";
 import { getPokemon } from "../../pokemon/pokemon";
 import { getTeamPokemon } from "../../teamPokemon/getTeamPokemon";
 import { battlePokemonService } from "./battle-pokemon.service";
