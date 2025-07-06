@@ -2,7 +2,7 @@ import { devLog, devError } from "../../src/utils/dev-utils";
 import { Pokemon } from "../../type/pokemon.type";
 
 export const fetch_first_pokemon = async():Promise<Pokemon[]> =>{
-    const base_url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const base_url = process.env.NEXT_PUBLIC_API_URL || 'https://poke-clone-server-so62bfi3va-an.a.run.app';
     devLog(`API URL: ${base_url}`);
     const url = `${base_url}/first-pokemon`;
     try {
