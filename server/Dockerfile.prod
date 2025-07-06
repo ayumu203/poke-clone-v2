@@ -1,0 +1,39 @@
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+# 依存関係をインストール
+COPY package*.json ./
+RUN npm ci
+
+# TypeScriptとPrismaクライアントのコンパイル
+COPY prisma ./prisma/
+COPY . .
+RUN npm run build
+RUN npx prisma generate
+
+# 本番用イメージ
+FROM node:18-alpine
+
+WORKDIR /app
+
+# 必要な依存関係のみをインストール
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# ビルド済みファイルとPrismaクライアントをコピー
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
+
+# 非rootユーザーでの実行
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+USER nodejs
+
+EXPOSE 3001
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node dist/health-check.js || exit 1
+
+CMD ["node", "dist/index.js"]
