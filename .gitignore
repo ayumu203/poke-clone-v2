@@ -31,3 +31,4 @@ Thumbs.db
 
 # データベース関連
 postgres_data
+deploy-to-gcp.sh
