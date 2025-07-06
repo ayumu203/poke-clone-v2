@@ -2,7 +2,7 @@ import { devLog, devError } from "../../src/utils/dev-utils";
 import { Move } from "../../type/move.type";
 
 export const fetch_move = async (move_id:number): Promise<Move> => {
-    const base_url = process.env.NEXT_PUBLIC_API_URL;
+    const base_url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     devLog(base_url);
     const url = `${base_url}/data/move`;
     try {

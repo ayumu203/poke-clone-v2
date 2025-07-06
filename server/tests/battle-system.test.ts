@@ -81,6 +81,7 @@ const createTestPokemon = (
     options: Partial<NonNullable<BattlePokemon>> = {}
 ): NonNullable<BattlePokemon> => {
     return {
+        player_id: "test_player",
         pokemon_id: id,
         pokemon_index: 0,
         level: 50,
@@ -106,6 +107,18 @@ const createTestPokemon = (
             speed: 0,
             accuracy: 0
         },
+        // 補助技用フィールド
+        status_ranks: {
+            attack: 0,
+            defense: 0,
+            "special-attack": 0,
+            "special-defense": 0,
+            speed: 0,
+            accuracy: 0,
+            evasion: 0
+        },
+        status_ailment: "none",
+        status_ailment_turn: 0,
         ...options
     };
 };
@@ -116,6 +129,7 @@ const createTestBattleInfo = (
     enemyPokemons: NonNullable<BattlePokemon>[]
 ): BattleInfo => {
     return {
+        player_id: "test_player",
         battlePokemons: {
             PlayerBattlePokemons: playerPokemons,
             EnemyBattlePokemons: enemyPokemons

@@ -5,7 +5,9 @@ import { getMove } from "../../move/move";
 import { ailmentHandler } from "../handlers/ailment.handler";
 import { applyAilmentHandler } from "../handlers/apply-ailment.handler";
 import { attackHandler } from "../handlers/attack.handler";
+import { statusHandler } from "../handlers/status.handler";
 import { shiftHandler } from "../handlers/shift.handler";
+import { applyStatModifier } from "../../../utils/stat-modifier";
 
 export const fightMode = async (battleInfo: BattleInfo, command_id: number): Promise<BattleInfo> => {
     console.log("⚔️ fightMode called with command_id:", command_id);
@@ -100,13 +102,22 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
         }
     }
 
-    // 優先度・素早さ判定   
-    if (playerBattlePokemon.speed >= enemyBattlePokemon.speed) {
+    // 優先度・素早さ判定（ランク補正を適用）
+    const playerSpeed = applyStatModifier(playerBattlePokemon.speed, playerBattlePokemon.status_ranks?.speed || 0);
+    const enemySpeed = applyStatModifier(enemyBattlePokemon.speed, enemyBattlePokemon.status_ranks?.speed || 0);
+    
+    console.log(`⚡ Speed comparison:`);
+    console.log(`   ${playerBattlePokemon.name}: ${playerBattlePokemon.speed} (rank: ${playerBattlePokemon.status_ranks?.speed || 0}) → ${playerSpeed}`);
+    console.log(`   ${enemyBattlePokemon.name}: ${enemyBattlePokemon.speed} (rank: ${enemyBattlePokemon.status_ranks?.speed || 0}) → ${enemySpeed}`);
+    
+    if (playerSpeed >= enemySpeed) {
         // プレイヤーの攻撃処理
         if (playerActionFlag && playerBattlePokemon.current_hp > 0) {
             // 攻撃技の処理
             if (playerMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "player", playerMove);
             if (playerMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "player", playerMove);
+            // 補助技の処理
+            if (isStatusMove(playerMove?.category)) battleInfo = statusHandler(battleInfo, "player", playerMove);
         }
         // 相手の攻撃処理
         if (enemyActionFlag && enemyBattlePokemon.current_hp > 0) {
@@ -114,16 +125,20 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
             if (enemyMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "enemy", enemyMove);
         }
     }
-    else if (playerBattlePokemon.speed < enemyBattlePokemon.speed) {
+    else if (playerSpeed < enemySpeed) {
         // 相手の攻撃処理
         if (enemyActionFlag && enemyBattlePokemon.current_hp > 0) {
             if (enemyMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "enemy", enemyMove);
             if (enemyMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "enemy", enemyMove);
+            // 補助技の処理
+            if (isStatusMove(enemyMove?.category)) battleInfo = statusHandler(battleInfo, "enemy", enemyMove);
         }
         // プレイヤーの攻撃処理
         if (playerActionFlag && playerBattlePokemon.current_hp > 0) {
             if (playerMove?.category.includes("damage")) battleInfo = attackHandler(battleInfo, "player", playerMove);
             if (playerMove?.category.includes("ailment")) battleInfo = applyAilmentHandler(battleInfo, "player", playerMove);
+            // 補助技の処理
+            if (isStatusMove(playerMove?.category)) battleInfo = statusHandler(battleInfo, "player", playerMove);
         }
     }
 
@@ -173,4 +188,21 @@ export const fightMode = async (battleInfo: BattleInfo, command_id: number): Pro
 
     console.log("⚔️ fightMode completed successfully");
     return battleInfo;
+}
+
+// 補助技かどうかを判定する関数
+function isStatusMove(category: string | undefined): boolean {
+    if (!category) return false;
+    
+    const statusCategories = [
+        "net-good-stats",
+        "heal",
+        "ailment",
+        "unique",
+        "field-effect",
+        "whole-field-effect",
+        "force-switch"
+    ];
+    
+    return statusCategories.includes(category);
 }

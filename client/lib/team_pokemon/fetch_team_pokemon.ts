@@ -2,7 +2,7 @@ import { devLog, devError } from "../../src/utils/dev-utils";
 import { TeamPokemon } from "../../type/teamPokemon.type";
 
 export const fetch_team_pokemon = async (player_id: string, index: number): Promise<TeamPokemon> => {
-    const base_url = process.env.NEXT_PUBLIC_API_URL;
+    const base_url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     devLog(base_url);
     const url = `${base_url}/team-pokemon`;
     try {

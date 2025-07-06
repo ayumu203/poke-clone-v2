@@ -2,6 +2,7 @@ import { BattleInfo } from "../../../types/battle/battle-info";
 import { BattlePokemon } from "../../../types/battle/battle-pokemon";
 import { Move } from "../../../types/core/move";
 import { getTypeEffectiveness, getEffectivenessMessage, getSTAB } from "../../../const/type-effectiveness.const";
+import { applyStatModifier } from "../../../utils/stat-modifier";
 
 export const attackHandler = (battleInfo: BattleInfo, playerOrEnemy: string, move: Move): BattleInfo => {
     // 必要データの確認
@@ -64,10 +65,28 @@ const calcDamage = (attackPokemon: BattlePokemon, defencePokemon: BattlePokemon,
     const level = attackPokemon.level;
     let attack = 0;
     let defence = 0;
-    if (move.damage_class === "physical") attack = attackPokemon.attack;
-    if (move.damage_class === "physical") defence = defencePokemon.defence;
-    if (move.damage_class === "special") attack = attackPokemon.special_attack;
-    if (move.damage_class === "special") defence = defencePokemon.special_defence;
+    
+    // 基本能力値を取得し、ランク補正を適用
+    if (move.damage_class === "physical") {
+        const attackRank = attackPokemon.status_ranks?.attack || 0;
+        const defenseRank = defencePokemon.status_ranks?.defense || 0;
+        attack = applyStatModifier(attackPokemon.attack, attackRank);
+        defence = applyStatModifier(defencePokemon.defence, defenseRank);
+        
+        console.log(`💪 Physical attack stats:`);
+        console.log(`   ${attackPokemon.name} attack: ${attackPokemon.attack} (rank: ${attackRank}) → ${attack}`);
+        console.log(`   ${defencePokemon.name} defense: ${defencePokemon.defence} (rank: ${defenseRank}) → ${defence}`);
+    }
+    if (move.damage_class === "special") {
+        const spAttackRank = attackPokemon.status_ranks?.["special-attack"] || 0;
+        const spDefenseRank = defencePokemon.status_ranks?.["special-defense"] || 0;
+        attack = applyStatModifier(attackPokemon.special_attack, spAttackRank);
+        defence = applyStatModifier(defencePokemon.special_defence, spDefenseRank);
+        
+        console.log(`🧠 Special attack stats:`);
+        console.log(`   ${attackPokemon.name} sp.attack: ${attackPokemon.special_attack} (rank: ${spAttackRank}) → ${attack}`);
+        console.log(`   ${defencePokemon.name} sp.defense: ${defencePokemon.special_defence} (rank: ${spDefenseRank}) → ${defence}`);
+    }
 
     // タイプ相性の計算
     console.log(`🎯 Attack move: ${move.name} (${move.type})`);

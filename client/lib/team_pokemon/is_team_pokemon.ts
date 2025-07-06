@@ -1,6 +1,6 @@
 import { devLog, devError } from "../../src/utils/dev-utils";
 export const is_team_pokemon = async (player_id:string,index:number):Promise<boolean> => {
-    const base_url = process.env.NEXT_PUBLIC_API_URL;
+    const base_url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     devLog(base_url);
     const url = `${base_url}/team-pokemon`;
     try {

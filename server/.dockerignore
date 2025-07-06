@@ -12,6 +12,8 @@ dist
 tests/
 *.test.ts
 *.test.js
+test_*.ts
+check_*.ts
 
 # Development files
 nodemon.json
