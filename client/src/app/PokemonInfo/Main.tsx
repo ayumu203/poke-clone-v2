@@ -125,7 +125,6 @@ export default function Main() {
                     </button>
                     <PokemonDetail 
                         pokemonData={pokemonData[selectedIndex]} 
-                        onBack={handleBackToGrid}
                     />
                 </>
             )}

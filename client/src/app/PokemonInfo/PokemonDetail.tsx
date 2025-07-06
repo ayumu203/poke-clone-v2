@@ -11,7 +11,6 @@ type PokemonData = {
 
 type Props = {
     pokemonData: PokemonData;
-    onBack: () => void;
 };
 
 // タイプカラーマッピング
@@ -36,7 +35,7 @@ const typeColors: { [key: string]: string } = {
     fairy: "bg-pink-300",
 };
 
-export default function PokemonDetail({ pokemonData, onBack: _onBack }: Props) {
+export default function PokemonDetail({ pokemonData }: Props) {
     const { pokemon, teamPokemon, moves } = pokemonData;
 
     if (!pokemon || !teamPokemon) {
