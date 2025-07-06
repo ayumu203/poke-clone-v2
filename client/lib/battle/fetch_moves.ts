@@ -7,7 +7,7 @@ export async function fetchMovesByIds(moveIds: number[]): Promise<Move[]> {
     const moves: Move[] = [];
     
     for (const moveId of moveIds) {
-      const response = await apiClient.post('/data/move', {
+      const response = await apiClient.post<Move>('/data/move', {
         move_id: moveId
       });
       moves.push(response.data);

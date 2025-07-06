@@ -29,7 +29,7 @@ export async function fetchBattleProcess(
     battleInfo: battleInfo
   });
 
-  const response = await apiClient.post('/battle/process', {
+  const response = await apiClient.post<BattleInfo>('/battle/process', {
     action: battleAction,
     battleInfo: battleInfo
   });

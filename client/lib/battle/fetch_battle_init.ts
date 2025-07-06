@@ -3,7 +3,7 @@ import { apiClient } from '../api/api-client';
 import { devLog } from '../../src/utils/dev-utils';
 
 export async function fetchBattleInit(playerId: string): Promise<BattleInfo> {
-  const response = await apiClient.post('/battle/init', {
+  const response = await apiClient.post<BattleInfo>('/battle/init', {
     player_id: playerId
   });
   
