@@ -2,7 +2,7 @@ import { devLog, devError } from '../../src/utils/dev-utils';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   data: T;
   status: number;
   statusText: string;
@@ -15,10 +15,10 @@ class ApiClient {
     this.baseURL = baseURL;
   }
 
-  private async request<T = any>(
+  private async request<T = unknown>(
     method: string,
     endpoint: string,
-    data?: any
+    data?: unknown
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     
@@ -65,19 +65,19 @@ class ApiClient {
     }
   }
 
-  async get<T = any>(endpoint: string): Promise<ApiResponse<T>> {
+  async get<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
     return this.request<T>('GET', endpoint);
   }
 
-  async post<T = any>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async post<T = unknown>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>('POST', endpoint, data);
   }
 
-  async put<T = any>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async put<T = unknown>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>('PUT', endpoint, data);
   }
 
-  async delete<T = any>(endpoint: string): Promise<ApiResponse<T>> {
+  async delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
     return this.request<T>('DELETE', endpoint);
   }
 }

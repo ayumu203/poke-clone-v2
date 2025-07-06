@@ -229,7 +229,6 @@ async function runPerformanceTests() {
   }
   
   // 結果をCSV形式で出力
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const csvContent = [
     'テスト名,HTTPステータス,Fetch時間(ms),JSON解析時間(ms),総時間(ms),レスポンスサイズ(bytes),成功,エラー',
     ...results.map(r => `${r.testName},${r.status},${r.fetchTime},${r.parseTime},${r.totalTime},${r.responseSize},${r.success},${r.error || ''}`)

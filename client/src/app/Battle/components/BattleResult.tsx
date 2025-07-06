@@ -1,4 +1,5 @@
 import { BattleResult as BattleResultType } from '../../../types/battle/battle-result';
+import Image from 'next/image';
 
 interface BattleResultProps {
   battleResult: BattleResultType;
@@ -40,9 +41,11 @@ function BattleResult({ battleResult, onReturn }: BattleResultProps) {
           <div className="gained-pokemon">
             <div className="gained-title">新しいポケモンを捕まえた！</div>
             <div className="pokemon-card">
-              <img 
+              <Image 
                 src={battleResult.gainPokemon.image} 
                 alt={battleResult.gainPokemon.name}
+                width={96}
+                height={96}
                 className="pokemon-image"
                 onError={(e) => {
                   e.currentTarget.src = '/pokemon-placeholder.png';

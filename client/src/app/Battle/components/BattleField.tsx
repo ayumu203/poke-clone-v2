@@ -1,5 +1,6 @@
 import { BattlePokemons } from '../../../types/battle/battle-pokemons';
 import { devLog } from '../../../utils/dev-utils';
+import Image from 'next/image';
 import './PokemonDisplay.css';
 
 interface BattleFieldProps {
@@ -49,9 +50,11 @@ function BattleField({ battlePokemons, backgroundImage }: BattleFieldProps) {
             )}
           </div>
           <div className="pokemon-sprite enemy">
-            <img 
+            <Image 
               src={enemyPokemon.image} 
               alt={enemyPokemon.name}
+              width={96}
+              height={96}
               onError={(e) => {
                 e.currentTarget.src = '/pokemon-placeholder.png';
               }}
@@ -62,9 +65,11 @@ function BattleField({ battlePokemons, backgroundImage }: BattleFieldProps) {
         {/* プレイヤーのポケモン */}
         <div className="player-pokemon-area">
           <div className="pokemon-sprite player">
-            <img 
+            <Image 
               src={playerPokemon.image} 
               alt={playerPokemon.name}
+              width={96}
+              height={96}
               onError={(e) => {
                 e.currentTarget.src = '/pokemon-placeholder.png';
               }}

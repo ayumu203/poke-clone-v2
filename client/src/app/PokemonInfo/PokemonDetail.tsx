@@ -36,7 +36,7 @@ const typeColors: { [key: string]: string } = {
     fairy: "bg-pink-300",
 };
 
-export default function PokemonDetail({ pokemonData, onBack }: Props) {
+export default function PokemonDetail({ pokemonData, onBack: _onBack }: Props) {
     const { pokemon, teamPokemon, moves } = pokemonData;
 
     if (!pokemon || !teamPokemon) {
