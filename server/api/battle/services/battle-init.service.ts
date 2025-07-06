@@ -32,20 +32,30 @@ export const battleInitService = async (player_id: string): Promise<BattleInfo |
     
     console.log("playerBattlePokemons", playerBattlePokemons);
 
+    // プレイヤーの最初のポケモンのレベルを基準に敵のレベルを決定
+    const playerLevel = playerBattlePokemons[0]?.level || 5;
+    const baseEnemyLevel = Math.max(5, playerLevel); // 最低レベル5
+
     // 敵ポケモンの生成
     const EnemyBattlePokemons: (BattlePokemon | null)[] = [];
     for (let i = 0; i < 3; i++) {
         const randomPokemonId: number = Math.random() * (POKEMON_ID_END - POKEMON_ID_BEGIN + 1) + POKEMON_ID_BEGIN;
         const pokemon: Pokemon | null = await getPokemon(Math.floor(randomPokemonId));
         if (!pokemon) continue;
+        
+        // 敵のレベルをプレイヤーレベル±3の範囲で設定
+        const enemyLevel = Math.max(5, baseEnemyLevel + Math.floor(Math.random() * 7) - 3); // -3〜+3の範囲
+        
         const teamPokemon: TeamPokemon = {
             player_id: "enemy",
             index: i,
             pokemon_id: pokemon.pokemon_id ?? 0,
-            level: Math.floor(Math.random() * 10) + 5,
+            level: enemyLevel,
             exp: 0,
             move_list: pokemon.move_list ?? []
         }
+        console.log(`🎯 Enemy Pokemon ${i}: ${pokemon.name} Level ${enemyLevel} (Player Level: ${playerLevel})`);
+        
         const battlePokemon: BattlePokemon | null = battlePokemonService(pokemon, teamPokemon);
         if (battlePokemon) EnemyBattlePokemons.push(battlePokemon);
     }
@@ -67,6 +77,7 @@ export const battleInitService = async (player_id: string): Promise<BattleInfo |
 
     // ユーザへ返す情報の生成
     const battleInfo: BattleInfo = {
+        player_id: player_id,
         battlePokemons: {
             PlayerBattlePokemons: playerBattlePokemons,
             EnemyBattlePokemons: EnemyBattlePokemons

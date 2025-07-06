@@ -29,7 +29,7 @@ export default function Main() {
                 ポケモン
             </button>
             <button
-                onClick={() => { router.push("/WildBattle") }}
+                onClick={() => { router.push("/Battle") }}
                 style={{
                     position: "absolute",
                     top: "20%",

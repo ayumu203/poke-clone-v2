@@ -1,8 +1,9 @@
+import { devLog, devError } from "../../src/utils/dev-utils";
 import { Move } from "../../type/move.type";
 
 export const fetch_move = async (move_id:number): Promise<Move> => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-    console.log(base_url);
+    devLog(base_url);
     const url = `${base_url}/data/move`;
     try {
         const response = await fetch(url, {
@@ -21,7 +22,7 @@ export const fetch_move = async (move_id:number): Promise<Move> => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error(error);
+        devError(error);
         throw error;
     }
 }

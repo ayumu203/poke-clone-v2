@@ -1,0 +1,246 @@
+/* Battle Field */
+.battle-field {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+.battle-field-overlay {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.3) 0%,
+    rgba(71, 85, 105, 0.2) 50%,
+    rgba(30, 41, 59, 0.3) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  position: relative;
+}
+
+/* Enemy Pokemon Area */
+.enemy-pokemon-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: auto;
+}
+
+.pokemon-info.enemy {
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid rgba(239, 68, 68, 0.6);
+  border-radius: 12px;
+  padding: 15px;
+  min-width: 250px;
+  backdrop-filter: blur(10px);
+}
+
+.pokemon-sprite.enemy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+}
+
+.pokemon-sprite.enemy img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5));
+  animation: enemyFloat 3s ease-in-out infinite;
+}
+
+/* Player Pokemon Area */
+.player-pokemon-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.pokemon-sprite.player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}
+
+.pokemon-sprite.player img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5));
+  animation: playerFloat 3s ease-in-out infinite reverse;
+}
+
+.pokemon-info.player {
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid rgba(16, 185, 129, 0.6);
+  border-radius: 12px;
+  padding: 15px;
+  min-width: 280px;
+  backdrop-filter: blur(10px);
+}
+
+/* Pokemon Info Styling */
+.pokemon-name {
+  color: #f1f5f9;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.pokemon-level {
+  color: #fbbf24;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* HP Bar */
+.hp-bar-container {
+  margin-bottom: 8px;
+}
+
+.hp-label {
+  color: #f1f5f9;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.hp-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(71, 85, 105, 0.8);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.hp-fill {
+  height: 100%;
+  transition: width 0.5s ease, background-color 0.3s ease;
+  border-radius: 3px;
+}
+
+.hp-text {
+  color: #f1f5f9;
+  font-size: 11px;
+  margin-top: 4px;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Ailment Status */
+.ailment-status {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-top: 5px;
+  animation: pulse 2s infinite;
+}
+
+/* No Pokemon State */
+.no-pokemon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #f1f5f9;
+  font-size: 18px;
+  font-weight: bold;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 12px;
+  border: 2px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Animations */
+@keyframes enemyFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes playerFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .battle-field-overlay {
+    padding: 15px;
+  }
+  
+  .enemy-pokemon-area,
+  .player-pokemon-area {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .pokemon-info.enemy,
+  .pokemon-info.player {
+    min-width: auto;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .pokemon-sprite.enemy img,
+  .pokemon-sprite.player img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .pokemon-sprite.enemy,
+  .pokemon-sprite.player {
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .pokemon-name {
+    font-size: 16px;
+  }
+  
+  .pokemon-sprite.enemy img,
+  .pokemon-sprite.player img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .pokemon-info.enemy,
+  .pokemon-info.player {
+    padding: 12px;
+  }
+}
