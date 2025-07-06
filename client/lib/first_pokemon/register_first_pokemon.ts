@@ -1,8 +1,9 @@
 import { Pokemon } from "../../type/pokemon.type";
+import { devLog, devError } from '../../src/utils/dev-utils';
 
 export const register_first_pokemon = async(player_id:string, pokemon_id:number):Promise<Pokemon> =>{
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-    console.log(base_url);
+    devLog(base_url);
     const url = `${base_url}/first-pokemon/register`;
     try {
         const response = await fetch(url,{
@@ -21,7 +22,7 @@ export const register_first_pokemon = async(player_id:string, pokemon_id:number)
         const data:Pokemon = await response.json();
         return data;
     } catch(error){
-        console.error(error);
+        devError(error);
         throw error;
     }
 }

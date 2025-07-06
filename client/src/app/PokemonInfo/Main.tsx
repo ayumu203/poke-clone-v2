@@ -5,45 +5,48 @@ import { fetch_team_pokemon } from "../../../lib/team_pokemon/fetch_team_pokemon
 import { TeamPokemon } from "../../../type/teamPokemon.type";
 import { fetch_pokemon } from "../../../lib/pokemon/fetch_pokemon";
 import { useRouter } from "next/navigation";
-import Info from "./Info";
+import PokemonGrid from "./PokemonGrid";
+import PokemonDetail from "./PokemonDetail";
 import { Move } from "../../../type/move.type";
 import { fetch_move } from "../../../lib/move/fetch_move";
 
+type PokemonData = {
+    pokemon: Pokemon;
+    teamPokemon: TeamPokemon;
+    moves: Move[];
+};
+
 export default function Main() {
     const { player } = usePlayer();
-    const [ pokemons,setPokemons ] = useState<Pokemon[]>([]);
-    const [teamPokemons, setTeamPokemons] = useState<TeamPokemon[]>([]);
-    const [moves, setMoves] = useState<Move[]>([]);
+    const [pokemonData, setPokemonData] = useState<PokemonData[]>([]);
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
         const handleFetchTeamPokemon = async () => {
-            const newMoves = new Set<Move>();
-            const newPokemons: Pokemon[] = [];
-            const newTeamPokemons: TeamPokemon[] = [];
+            if (!player) return;
+            
+            setIsLoading(true);
+            const newPokemonData: PokemonData[] = [];
 
-            for (let i = 0; i < 6; i++) {
-                const teamPokemon = await fetch_team_pokemon(player!.player_id, i);
+            for (let i = 0; i <= 6; i++) {
+                const teamPokemon = await fetch_team_pokemon(player.player_id, i);
                 if (teamPokemon) {
                     const pokemon = await fetch_pokemon(teamPokemon.pokemon_id);
                     if (pokemon) {
-                        newTeamPokemons[teamPokemon.index] = teamPokemon;
-                        newPokemons[teamPokemon.index] = pokemon;
+                        const moves: Move[] = [];
                         for (const move_id of teamPokemon.move_list) {
-                            const move:Move = await fetch_move(move_id);
-                            newMoves.add(move);
+                            const move = await fetch_move(move_id);
+                            if (move) moves.push(move);
                         }
+                        newPokemonData.push({ pokemon, teamPokemon, moves });
                     }
                 }
             }
 
-            setPokemons(newPokemons);
-            setTeamPokemons(newTeamPokemons);
-            setMoves(Array.from(newMoves));
-
-            // console.log("Pokemons:", pokemons);
-            // console.log("Team Pokemons:", teamPokemons);
-            // console.log("Moves:", Array.from(moves));
+            setPokemonData(newPokemonData);
+            setIsLoading(false);
         };
 
         if (player) {
@@ -51,21 +54,80 @@ export default function Main() {
         }
     }, [player]);
 
-    return (
-        <div className="bg-blue-200 flex-1 p-4">
-            <button
-                onClick={() => router.push("/")}
-                className="h-[8vh] w-[96px] bg-black opacity-30 hover:opacity-70 text-white text-[30px]">
-                戻る
-            </button>
-            <div className="flex flex-col items-center text-white justify-center">
-                {
-                    teamPokemons.map((teamPokemon, index) => {
-                        const pokemon = pokemons[index];
-                        if (pokemon) return (<Info key={index} pokemon={pokemon} teamPokemon={teamPokemon} moves={moves}></Info>);
-                    })
+    const handlePokemonSelect = (index: number) => {
+        setSelectedIndex(index);
+    };
+
+    const handleBackToGrid = () => {
+        setSelectedIndex(null);
+    };
+
+    const handleReload = async () => {
+        if (!player) return;
+        
+        setIsLoading(true);
+        const newPokemonData: PokemonData[] = [];
+
+        for (let i = 0; i <= 6; i++) {
+            const teamPokemon = await fetch_team_pokemon(player.player_id, i);
+            if (teamPokemon) {
+                const pokemon = await fetch_pokemon(teamPokemon.pokemon_id);
+                if (pokemon) {
+                    const moves: Move[] = [];
+                    for (const move_id of teamPokemon.move_list) {
+                        const move = await fetch_move(move_id);
+                        if (move) moves.push(move);
+                    }
+                    newPokemonData.push({ pokemon, teamPokemon, moves });
                 }
+            }
+        }
+
+        setPokemonData(newPokemonData);
+        setIsLoading(false);
+    };
+
+    if (isLoading) {
+        return (
+            <div className="bg-blue-900 flex-1 flex items-center justify-center">
+                <div className="text-white text-xl">データ取得中...</div>
             </div>
+        );
+    }
+
+    return (
+        <div className="bg-blue-900 flex-1 relative">
+            {selectedIndex === null ? (
+                <>
+                    <div className="absolute top-4 left-4 z-10 flex gap-2">
+                        <button
+                            onClick={() => router.push("/")}
+                            className="h-12 w-24 bg-black bg-opacity-50 hover:bg-opacity-70 text-white text-lg rounded">
+                            戻る
+                        </button>
+                        <button
+                            onClick={handleReload}
+                            className="h-12 w-24 bg-green-600 bg-opacity-70 hover:bg-opacity-90 text-white text-lg rounded">
+                            更新
+                        </button>
+                    </div>
+                    <PokemonGrid 
+                        pokemonData={pokemonData} 
+                        onPokemonSelect={handlePokemonSelect} 
+                    />
+                </>
+            ) : (
+                <>
+                    <button
+                        onClick={handleBackToGrid}
+                        className="absolute top-4 right-4 z-10 h-12 w-24 bg-black bg-opacity-50 hover:bg-opacity-70 text-white text-lg rounded">
+                        戻る
+                    </button>
+                    <PokemonDetail 
+                        pokemonData={pokemonData[selectedIndex]} 
+                    />
+                </>
+            )}
         </div>
-    )
+    );
 }

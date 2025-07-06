@@ -1,6 +1,7 @@
+import { devLog, devError } from "../../src/utils/dev-utils";
 export const is_first_pokemon = async (player_id:string):Promise<boolean> => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-    console.log(base_url);
+    devLog(base_url);
     const url = `${base_url}/team-pokemon`;
     try {
         const response = await fetch(url, {
@@ -21,7 +22,7 @@ export const is_first_pokemon = async (player_id:string):Promise<boolean> => {
         if(!data)return false;
         else return true;
     } catch (error) {
-        console.error(error);
+        devError(error);
         throw error;
     }
 }

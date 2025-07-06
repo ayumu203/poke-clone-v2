@@ -1,0 +1,38 @@
+/* Global CSS overrides for Battle page */
+.battle-container * {
+  box-sizing: border-box;
+}
+
+/* Ensure proper z-index layering */
+.battle-container {
+  z-index: 0;
+}
+
+.battle-container::before {
+  z-index: 1;
+}
+
+.battle-field-area,
+.battle-action-area {
+  position: relative;
+  z-index: 2;
+}
+
+/* Custom scrollbar for battle log */
+.log-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.log-content::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 3px;
+}
+
+.log-content::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.6);
+  border-radius: 3px;
+}
+
+.log-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8);
+}

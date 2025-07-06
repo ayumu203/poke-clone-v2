@@ -1,2 +1,68 @@
 @import "tailwindcss";
 
+/* バトル画面用のカスタムアニメーション */
+@keyframes pokemon-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes hp-bar-update {
+  0% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(1.02);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes battle-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.pokemon-entrance {
+  animation: pokemon-entrance 0.8s ease-out;
+}
+
+.hp-bar-update {
+  animation: hp-bar-update 0.3s ease-in-out;
+}
+
+.battle-shake {
+  animation: battle-shake 0.6s ease-in-out;
+}
+
+/* カスタムスクロールバー */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

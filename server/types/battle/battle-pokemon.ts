@@ -1,6 +1,7 @@
 import { Rank } from "../game/rank";
 
 export type BattlePokemon = {
+    player_id: string;
     pokemon_id: number;
     pokemon_index: number;
     level: number;

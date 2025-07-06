@@ -36,13 +36,13 @@ services:
     container_name: poke-clone-client
     ports:
       - "3000:3000"
-    # environment:
-    #   - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
     volumes:
       - ./client:/app
       - /app/node_modules
-    # depends_on:
-    #   - server
+    depends_on:
+      - server
     restart: unless-stopped
 
 volumes:
