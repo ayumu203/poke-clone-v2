@@ -1,6 +1,6 @@
 import { devLog, devError } from '../../src/utils/dev-utils';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://poke-clone-server-so62bfi3va-an.a.run.app';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 interface ApiResponse<T = unknown> {
   data: T;
