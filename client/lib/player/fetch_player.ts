@@ -1,8 +1,9 @@
 import { Player } from "../../type/player.type";
+import { devLog, devError } from '../../src/utils/dev-utils';
 
 export const fetch_player = async(player_id:string):Promise<Player> =>{
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-    console.log(base_url);
+    devLog(base_url);
     const url = `${base_url}/player`;
     try {
         const response = await fetch(url,{
@@ -18,7 +19,7 @@ export const fetch_player = async(player_id:string):Promise<Player> =>{
         const data:Player = await response.json();
         return data;
     } catch(error){
-        console.error(error);
+        devError(error);
         throw error;
     }
 }

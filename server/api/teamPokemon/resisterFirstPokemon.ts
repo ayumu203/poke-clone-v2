@@ -15,10 +15,24 @@ export async function registerTeamPokemon(player_id: string, pokemon_id: number,
         throw new Error("ポケモンが見つかりません");
     }
     else {
+        console.log(`🔍 Getting moves for first Pokemon ${pokemon.name} (ID: ${pokemon_id})`);
+        console.log(`🔍 Pokemon move_list:`, pokemon.move_list);
+        
         for (let i = 0; i < MAX_MOVE_COUNT; i++) {
-            const move: Move = await getMove(pokemon.move_list[i]);
-            move_list.push(move!.move_id);
+            if (pokemon.move_list && pokemon.move_list[i]) {
+                const move: Move = await getMove(pokemon.move_list[i]);
+                if (move) {
+                    move_list.push(move.move_id);
+                    console.log(`✅ Move ${i}: ${move.name} (ID: ${move.move_id})`);
+                } else {
+                    console.log(`❌ Move ${i}: Move ID ${pokemon.move_list[i]} not found`);
+                }
+            } else {
+                console.log(`⚠️ Move ${i}: No move ID found in pokemon.move_list[${i}]`);
+            }
         }
+        
+        console.log(`🔍 Final move_list for first Pokemon:`, move_list);
     }
     await prisma.teamPokemon.create({
         data: {

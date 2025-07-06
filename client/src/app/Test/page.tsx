@@ -10,6 +10,7 @@ import { fetch_first_pokemon } from "../../../lib/first_pokemon/fetch_first_poke
 import { TeamPokemon } from "../../../type/teamPokemon.type";
 import { fetch_team_pokemon } from "../../../lib/team_pokemon/fetch_team_pokemon";
 import { register_first_pokemon } from "../../../lib/first_pokemon/register_first_pokemon";
+import { devLog } from "../../utils/dev-utils";
 
 // export const deleteall = async():Promise<void> =>{
 //     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
@@ -53,14 +54,14 @@ export default function Home() {
         const handleRegisterFirstPokemon = async() => {
             if(player && player.player_id){
                 const pokemon:Pokemon = await register_first_pokemon(player.player_id,494);
-                console.log(pokemon);
+                devLog(pokemon);
             }
         }
         const handleFetchTeamPokemon = async() => {
             if(player && player.player_id){
                 const pokemon:TeamPokemon = await fetch_team_pokemon(player.player_id,0);
                 setTeamPokemon(pokemon);
-                console.log(pokemon);
+                devLog(pokemon);
             }
         }
         handleDelete();

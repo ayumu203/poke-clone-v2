@@ -12,6 +12,7 @@ export const battlePokemonService = (pokemon: Pokemon, teamPokemon: TeamPokemon)
         const speed = Math.floor(pokemon.base_speed * teamPokemon.level / 100) + 5;
 
         const battlePokemon:BattlePokemon = {
+            player_id: teamPokemon.player_id,
             pokemon_id: pokemon.pokemon_id,
             pokemon_index: teamPokemon.index,
             level: teamPokemon.level,

@@ -1,3 +1,4 @@
+import { devLog, devError } from "../../src/utils/dev-utils";
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
