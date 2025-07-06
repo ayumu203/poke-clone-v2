@@ -2,7 +2,7 @@ import { devLog, devError } from "../../src/utils/dev-utils";
 import { Pokemon } from "../../type/pokemon.type";
 
 export const fetch_pokemon = async (pokemon_id:number): Promise<Pokemon> => {
-    const base_url = process.env.NEXT_PUBLIC_BASE_URL;
+    const base_url = process.env.NEXT_PUBLIC_API_URL;
     devLog(base_url);
     const url = `${base_url}/data/pokemon`;
     try {
