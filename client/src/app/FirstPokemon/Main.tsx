@@ -41,7 +41,7 @@ export default function Main() {
             }
         }
         handleExistTeamPokemon();
-    },[player]);
+    },[player, router]);
 
     // 以下は初期ポケモン登録処理
     function handleSelect(id: number): void {
@@ -64,13 +64,13 @@ export default function Main() {
                 const fpks:Pokemon[] = await fetch_first_pokemon();
                 setFirstPokemons(fpks);
                 setError(""); // エラーをクリア
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error('First Pokemon fetch error:', err);
-                const errorMessage = err?.message || 'Unknown error';
+                const errorMessage = err instanceof Error ? err.message : 'Unknown error';
                 setError(`ポケモン取得エラー: ${errorMessage}`);
                 
                 // ネットワークエラーの詳細情報も追加
-                if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                if (err instanceof Error && err.name === 'TypeError' && err.message.includes('fetch')) {
                     setError(`ネットワークエラー: サーバーに接続できません (${process.env.NEXT_PUBLIC_API_URL})`);
                 }
             }
@@ -95,7 +95,7 @@ export default function Main() {
             }
         }
         handleRegister();
-    },[submitFlag]);
+    },[submitFlag, player, router, selectId]);
 
     return (
         <div className="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 flex-1 flex flex-col text-white">

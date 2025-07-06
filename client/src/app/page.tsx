@@ -17,7 +17,7 @@ export default function Home() {
     if (!user) {
       router.push("/signIn");
     }
-  }, [])
+  }, [user, router])
 
   return (
     <>

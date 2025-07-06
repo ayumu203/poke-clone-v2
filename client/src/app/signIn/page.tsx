@@ -20,7 +20,7 @@ export default function SignInPage() {
     if (user && player) {
       router.push("/FirstPokemon");
     }
-  }, [user,player]);
+  }, [user, player, router]);
 
   return (
     <div className="">

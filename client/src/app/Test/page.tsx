@@ -68,7 +68,7 @@ export default function Home() {
         handleFetchFirstPokemon();
         handleRegisterFirstPokemon();
         handleFetchTeamPokemon();
-    }, [flag]);
+    }, [flag, player]);
 
     return (
         <>
