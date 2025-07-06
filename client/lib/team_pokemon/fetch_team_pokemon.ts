@@ -1,8 +1,8 @@
 import { devLog, devError } from "../../src/utils/dev-utils";
 import { TeamPokemon } from "../../type/teamPokemon.type";
 
-export const fetch_team_pokemon = async (player_id:string,index:number):Promise<TeamPokemon> => {
-    const base_url = process.env.NEXT_PUBLIC_BASE_URL;
+export const fetch_team_pokemon = async (player_id: string, index: number): Promise<TeamPokemon> => {
+    const base_url = process.env.NEXT_PUBLIC_API_URL;
     devLog(base_url);
     const url = `${base_url}/team-pokemon`;
     try {

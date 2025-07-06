@@ -20,6 +20,8 @@ export default function Main() {
     const [ selectId, setSelectId ] = useState<number>(-1);
     // 選択を送信済みかを保持
     const [ submitFlag, setSubmitFlag ] = useState<boolean>(false);
+    // エラー状態を保持
+    const [ error, setError ] = useState<string>("");
     const router = useRouter();
 
 
@@ -27,13 +29,19 @@ export default function Main() {
     useEffect(()=>{
         const handleExistTeamPokemon = async() =>{
             if(player){
-                const exist = await is_first_pokemon(player.player_id);
-                if(exist)router.push("/");
-                else setPageFlag(true);
+                try {
+                    const exist = await is_first_pokemon(player.player_id);
+                    if(exist)router.push("/");
+                    else setPageFlag(true);
+                } catch (err) {
+                    console.error('Team Pokemon check error:', err);
+                    setError(`チーム確認エラー: ${err}`);
+                    setPageFlag(true); // エラーでも画面は表示
+                }
             }
         }
         handleExistTeamPokemon();
-    },[player]);
+    },[player, router]);
 
     // 以下は初期ポケモン登録処理
     function handleSelect(id: number): void {
@@ -42,8 +50,30 @@ export default function Main() {
 
     useEffect(()=>{
         const handleFetchFirstPokemon = async() => {
-            const fpks:Pokemon[] = await fetch_first_pokemon();
-            setFirstPokemons(fpks);
+            try {
+                console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+                
+                // まずサーバーの基本的な接続をテスト
+                const healthResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/`);
+                console.log('Health check response:', healthResponse.status);
+                
+                if (!healthResponse.ok) {
+                    throw new Error(`サーバーが応答しません (Status: ${healthResponse.status})`);
+                }
+                
+                const fpks:Pokemon[] = await fetch_first_pokemon();
+                setFirstPokemons(fpks);
+                setError(""); // エラーをクリア
+            } catch (err: unknown) {
+                console.error('First Pokemon fetch error:', err);
+                const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+                setError(`ポケモン取得エラー: ${errorMessage}`);
+                
+                // ネットワークエラーの詳細情報も追加
+                if (err instanceof Error && err.name === 'TypeError' && err.message.includes('fetch')) {
+                    setError(`ネットワークエラー: サーバーに接続できません (${process.env.NEXT_PUBLIC_API_URL})`);
+                }
+            }
         }
         if(player)handleFetchFirstPokemon();
     },[player]);
@@ -65,32 +95,109 @@ export default function Main() {
             }
         }
         handleRegister();
-    },[submitFlag]);
+    },[submitFlag, player, router, selectId]);
 
     return (
-        <div className="bg-[url(/002_firstPokemon.png)] flex flex-col items-center justify-center flex-1 text-white p-4">
-            {submitFlag && <div className='text-[32px]'>通信中...</div>}
-            {!submitFlag && pageFlag && <>            
-                {/* 選択中のポケモン名を表示するコンポーネント */}
-                {selectId && firstPokemons.map((pokemon: Pokemon, index: number) => {
-                    let name: string = "";
-                    let type: string = "";
-                    if (pokemon?.pokemon_id === selectId){
-                        name = pokemon.name;
-                        type = pokemon.type1;
-                    }
-                    return <PokemonName key={index} name={name} type={type}></PokemonName>;
-                })}
-                {/* 選択できるポケモンを表示・クリックで選択できるコンポーネント */}
-                {firstPokemons && firstPokemons.map((pokemon,index) => {
-                    return <PokemonImage key={index} pokemon={pokemon} onSelect={handleSelect}></PokemonImage>
-                })}
+        <div className="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 flex-1 flex flex-col text-white">
+            <div className="flex-1 flex flex-col items-center justify-center p-6">
+            
+            <div className="relative z-10 w-full max-w-4xl mx-auto">
+                {/* エラー表示 */}
+                {error && (
+                    <div className="mb-6 bg-red-500 bg-opacity-90 text-white p-4 rounded-lg">
+                        <h3 className="font-bold">エラーが発生しました:</h3>
+                        <p className="text-sm">{error}</p>
+                        <p className="text-xs mt-2">API URL: {process.env.NEXT_PUBLIC_API_URL || '未設定'}</p>
+                    </div>
+                )}
 
-                {!submitFlag && <>            
-                <button className="h-[8vh] w-32 bg-white opacity-50 hover:opacity-80 text-gray-700 text-[30px]" onClick={handleSubmit}>決定</button>
-                </>}
-            </>}
-            {!pageFlag && <div className='text-[32px]'>データ取得中...</div>}
+                {/* ローディング状態 */}
+                {submitFlag && (
+                    <div className="flex flex-col items-center justify-center space-y-6">
+                        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-white"></div>
+                        <div className="text-3xl font-bold">
+                            あなたの相棒を登録しています...
+                        </div>
+                    </div>
+                )}
+
+                {/* メインコンテンツ */}
+                {!submitFlag && pageFlag && (
+                    <div className="space-y-6 mb-8">
+                        {/* タイトルセクション */}
+                        <div className="text-center space-y-4">
+                            <h1 className="text-5xl font-bold text-white drop-shadow-lg">
+                                最初のパートナーを選ぼう！
+                            </h1>
+                            <p className="text-xl text-gray-200 drop-shadow">
+                                あなたの冒険を共にするポケモンを選択してください
+                            </p>
+                        </div>
+
+                        {/* 選択中のポケモン表示 */}
+                        {selectId !== -1 && (
+                            <div className="bg-slate-800 bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-slate-600 border-opacity-50">
+                                {firstPokemons.map((pokemon: Pokemon, index: number) => {
+                                    if (pokemon?.pokemon_id === selectId) {
+                                        return (
+                                            <PokemonName 
+                                                key={index} 
+                                                name={pokemon.name} 
+                                                type={pokemon.type1}
+                                            />
+                                        );
+                                    }
+                                    return null;
+                                })}
+                            </div>
+                        )}
+
+                        {/* ポケモン選択グリッド */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center px-4">
+                            {firstPokemons.map((pokemon, index) => (
+                                pokemon ? (
+                                    <PokemonImage 
+                                        key={index} 
+                                        pokemon={pokemon} 
+                                        onSelect={handleSelect}
+                                        isSelected={selectId === pokemon.pokemon_id}
+                                    />
+                                ) : null
+                            ))}
+                        </div>
+
+                        {/* 決定ボタン */}
+                        {selectId !== -1 && (
+                            <div className="flex justify-center pt-4 pb-8">
+                                <button 
+                                    className="px-12 py-4 bg-gradient-to-r from-slate-600 to-blue-700 hover:from-slate-700 hover:to-blue-800 text-white text-2xl font-bold rounded-full shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl disabled:opacity-50 disabled:cursor-not-allowed"
+                                    onClick={handleSubmit}
+                                    disabled={selectId === -1}
+                                >
+                                    この子に決めた！
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* データ取得中 */}
+                {!pageFlag && (
+                    <div className="flex flex-col items-center justify-center space-y-6">
+                        <div className="animate-pulse">
+                            <div className="flex space-x-2">
+                                <div className="w-4 h-4 bg-white rounded-full animate-bounce"></div>
+                                <div className="w-4 h-4 bg-white rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                                <div className="w-4 h-4 bg-white rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                            </div>
+                        </div>
+                        <div className="text-3xl font-bold">
+                            ポケモンたちを探しています...
+                        </div>
+                    </div>
+                )}
+            </div>
+            </div>
         </div>
     )
 }
