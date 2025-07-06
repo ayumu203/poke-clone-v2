@@ -1,4 +1,4 @@
-import { devLog, devError } from "../../src/utils/dev-utils";
+import { devError } from "../../src/utils/dev-utils";
 import { Pokemon } from "../../type/pokemon.type";
 
 export const fetch_first_pokemon = async():Promise<Pokemon[]> =>{
