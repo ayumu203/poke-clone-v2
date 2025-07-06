@@ -108,7 +108,7 @@ export async function getPokemonBatch(pokemon_ids: number[]): Promise<Pokemon[]>
         console.log(`DB batch query getPokemon([${uncachedIds.join(',')}]): ${dbTime}ms`);
         
         // データベース結果をPokemon型に変換してキャッシュに保存
-        dbPokemons = dbData.map(data => {
+        dbPokemons = dbData.map((data: any) => {
             const pokemon: Pokemon = {
                 pokemon_id: data.pokemon_id,
                 name: data.name,

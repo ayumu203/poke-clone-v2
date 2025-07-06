@@ -34,7 +34,7 @@ log_error() {
 # =================================================================
 
 # プロジェクト設定
-PROJECT_ID="pkcv2-project"  # ←あなたのプロジェクトIDに変更
+PROJECT_ID="pkcv2tokyo"  # ←あなたのプロジェクトIDに変更
 REGION="asia-northeast1"    # 東京リージョン
 REPOSITORY_NAME="pkcv2-server"
 SERVICE_NAME="poke-clone-server"
@@ -42,8 +42,8 @@ IMAGE_NAME="poke-clone-server"
 IMAGE_TAG="latest"
 
 # データベース設定（.envファイルから取得）
-DATABASE_URL="postgresql://postgres.cgfurevypvlajsorbkiy:kvf09TNoYFUz0OqJ@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.cgfurevypvlajsorbkiy:kvf09TNoYFUz0OqJ@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres"
+DATABASE_URL="postgresql://postgres.aywognkgyngdxtjrfnfo:kvf09TNoYFUz0OqJ@aws-0-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.aywognkgyngdxtjrfnfo:kvf09TNoYFUz0OqJ@aws-0-us-east-2.pooler.supabase.com:5432/postgres"
 NODE_ENV="production"
 PORT="3001"
 
@@ -163,7 +163,16 @@ build_and_push_image() {
     cd server
     
     # Cloud Build を使用してビルド
-    gcloud builds submit --tag ${IMAGE_URI} --file Dockerfile.prod .
+    if [ -f "cloudbuild.yaml" ]; then
+        log_info "cloudbuild.yaml を使用してビルドします..."
+        gcloud builds submit --config cloudbuild.yaml --substitutions _IMAGE_URI=${IMAGE_URI}
+    else
+        log_info "Dockerfile.prod を一時的にコピーしてビルドします..."
+        # Dockerfile.prodを一時的にDockerfileとしてコピー
+        cp Dockerfile.prod Dockerfile
+        gcloud builds submit --tag ${IMAGE_URI}
+        rm Dockerfile
+    fi
     
     cd ..
     
@@ -181,7 +190,6 @@ deploy_to_cloud_run() {
         --set-env-vars="DATABASE_URL=${DATABASE_URL}" \
         --set-env-vars="DIRECT_URL=${DIRECT_URL}" \
         --set-env-vars="NODE_ENV=${NODE_ENV}" \
-        --set-env-vars="PORT=${PORT}" \
         --memory=512Mi \
         --cpu=1 \
         --min-instances=0 \

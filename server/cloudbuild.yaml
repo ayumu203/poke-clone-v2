@@ -1,0 +1,19 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'build'
+      - '-f'
+      - 'Dockerfile.prod'
+      - '-t'
+      - '${_IMAGE_URI}'
+      - '.'
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'push'
+      - '${_IMAGE_URI}'
+
+substitutions:
+  _IMAGE_URI: 'asia-northeast1-docker.pkg.dev/${PROJECT_ID}/pkcv2-server/poke-clone-server:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

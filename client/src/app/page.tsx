@@ -6,6 +6,7 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Main from "./Main/Main";
 import { usePlayer } from "../../context/playerContext";
+import EnvDebugComponent from "../components/EnvDebugComponent";
 
 export default function Home() {
   const { user } = useUser();
@@ -21,6 +22,7 @@ export default function Home() {
 
   return (
     <>
+      <EnvDebugComponent />
       <div className="min-h-screen flex flex-col">
         <Header />
         {user && player && <Main />}

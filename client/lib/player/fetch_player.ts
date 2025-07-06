@@ -1,9 +1,9 @@
 import { Player } from "../../type/player.type";
 import { devLog, devError } from '../../src/utils/dev-utils';
 
-export const fetch_player = async(player_id:string):Promise<Player> =>{
-    const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-    devLog(base_url);
+export const fetch_player = async (player_id: string): Promise<Player> => {
+    const base_url = process.env.NEXT_PUBLIC_API_URL || 'https://poke-clone-server-so62bfi3va-an.a.run.app';
+    devLog(`API URL: ${base_url}`);
     const url = `${base_url}/player`;
     try {
         const response = await fetch(url,{

@@ -79,7 +79,12 @@ cd /path/to/your/project/server
 
 ```bash
 # Cloud Build を使用してリモートでビルド（推奨）
-gcloud builds submit --tag ${IMAGE_URI} --file Dockerfile.prod .
+gcloud builds submit --config cloudbuild.yaml --substitutions _IMAGE_URI=${IMAGE_URI}
+
+# または、一時的にDockerfile.prodをDockerfileにリネームしてビルド
+# cp Dockerfile.prod Dockerfile
+# gcloud builds submit --tag ${IMAGE_URI}
+# rm Dockerfile  # 元に戻す
 
 # または、ローカルでビルドしてプッシュ
 # docker build -f Dockerfile.prod -t ${IMAGE_URI} .
@@ -109,7 +114,6 @@ gcloud run deploy ${SERVICE_NAME} \
     --set-env-vars="DATABASE_URL=${DATABASE_URL}" \
     --set-env-vars="DIRECT_URL=${DIRECT_URL}" \
     --set-env-vars="NODE_ENV=${NODE_ENV}" \
-    --set-env-vars="PORT=${PORT}" \
     --memory=512Mi \
     --cpu=1 \
     --min-instances=0 \
@@ -118,6 +122,8 @@ gcloud run deploy ${SERVICE_NAME} \
     --concurrency=80 \
     --allow-unauthenticated
 ```
+
+**⚠️ 注意**: Cloud RunではPORTは予約された環境変数です。`--set-env-vars`でPORTを設定せず、`--port`オプションのみを使用してください。
 
 ### 3. デプロイ確認
 
@@ -149,13 +155,46 @@ curl "${SERVICE_URL}/api/health"
 curl "${SERVICE_URL}/api/first-pokemon" -X POST -H "Content-Type: application/json"
 ```
 
+## ✅ デプロイ完了後のチェックリスト
+
+### 1. 基本動作確認
+```bash
+# サービスURL確認
+export SERVICE_URL=$(gcloud run services describe ${SERVICE_NAME} --region=${REGION} --format="value(status.url)")
+echo "Service URL: ${SERVICE_URL}"
+
+# ヘルスチェック
+curl "${SERVICE_URL}/health"
+
+# 基本APIテスト
+curl "${SERVICE_URL}/api/health"
+```
+
+### 2. パフォーマンステスト
+```bash
+# 簡単なロードテスト
+for i in {1..10}; do curl -s "${SERVICE_URL}/health" && echo " - Request $i OK"; done
+```
+
+### 3. 監視設定
+- Google Cloud Console でメトリクス確認
+- アラート設定（必要に応じて）
+- ログ監視の設定
+
+### 4. セキュリティ確認
+- IAM権限の最小化
+- 機密情報の環境変数管理
+- HTTPS通信の確認
+
+---
+
 ## 🔄 更新手順
 
 既存のサービスを更新する場合：
 
 ```bash
 # 1. 新しいイメージをビルド
-gcloud builds submit --tag ${IMAGE_URI} --file Dockerfile.prod .
+gcloud builds submit --config cloudbuild.yaml --substitutions _IMAGE_URI=${IMAGE_URI}
 
 # 2. Cloud Run サービスを更新
 gcloud run deploy ${SERVICE_NAME} \
@@ -218,17 +257,47 @@ gcloud run deploy ${SERVICE_NAME} \
 
 ### よくある問題と解決方法
 
-1. **ビルドエラー**: Dockerfile.prod の設定を確認
-2. **起動エラー**: 環境変数の設定を確認
-3. **データベース接続エラー**: DATABASE_URL の形式を確認
-4. **ポートエラー**: PORT環境変数とExposeポートの一致を確認
+1. **Cloud Run予約環境変数エラー**: 
+   - エラー例: `The following reserved env names were provided: PORT`
+   - 解決方法: `--set-env-vars`からPORTを削除し、`--port`オプションのみ使用
+   ```bash
+   # ❌ 間違い
+   --set-env-vars="PORT=3001" --port=3001
+   
+   # ✅ 正しい
+   --port=3001
+   ```
 
-### ログ確認コマンド
+2. **TypeScriptビルドエラー（TS7006）**: 
+   - エラー例: `Parameter 'data' implicitly has an 'any' type`
+   - 解決方法: 型を明示的に指定
+   ```typescript
+   // 修正前
+   dbData.map(data => { ... })
+   
+   // 修正後
+   dbData.map((data: any) => { ... })
+   ```
 
-```bash
-# 詳細なログを確認
-gcloud run services logs read ${SERVICE_NAME} --region=${REGION} --format="table(timestamp,severity,textPayload)"
-```
+3. **ビルドエラー**: Dockerfile.prod の設定を確認
+4. **起動エラー**: 環境変数の設定を確認
+5. **データベース接続エラー**: DATABASE_URL の形式を確認
+6. **ポートエラー**: PORT環境変数とExposeポートの一致を確認
+
+### Cloud Build エラー対処法
+
+1. **ローカルでのビルドテスト**:
+   ```bash
+   # serverディレクトリで実行
+   npm run build  # TypeScriptエラーをチェック
+   docker build -f Dockerfile.prod -t test-build .  # Dockerビルドテスト
+   ```
+
+2. **環境変数の確認**:
+   ```bash
+   echo "PROJECT_ID: $PROJECT_ID"
+   echo "IMAGE_URI: $IMAGE_URI"
+   ```
 
 ---
 

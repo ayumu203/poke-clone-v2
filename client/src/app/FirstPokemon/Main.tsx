@@ -51,10 +51,15 @@ export default function Main() {
     useEffect(()=>{
         const handleFetchFirstPokemon = async() => {
             try {
-                console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                console.log('API URL:', apiUrl);
+                
+                if (!process.env.NEXT_PUBLIC_API_URL) {
+                    console.warn('NEXT_PUBLIC_API_URL is not defined, using fallback:', apiUrl);
+                }
                 
                 // まずサーバーの基本的な接続をテスト
-                const healthResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/`);
+                const healthResponse = await fetch(`${apiUrl}/`);
                 console.log('Health check response:', healthResponse.status);
                 
                 if (!healthResponse.ok) {
