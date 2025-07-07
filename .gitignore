@@ -11,10 +11,22 @@ out
 
 # 環境変数ファイル
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# 機密情報ファイル
+secrets/
+config/database.json
+config/production.json
+*.pem
+*.key
+*.p12
+*.crt
+id_rsa*
+*.secret
 
 # エディタ設定
 .vscode
@@ -28,7 +40,43 @@ Thumbs.db
 
 # ログファイル
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# テスト関連
+coverage/
+test_*.ts
+*_test.ts
+*.test.ts
+*.spec.ts
+test_results/
 
 # データベース関連
 postgres_data
+*.db
+*.sqlite
+*.sqlite3
+database.url
+db_backup/
+dumps/
+
+# デプロイ関連（機密情報を含む可能性）
 deploy-to-gcp.sh
+GCP-Deploy-Guide.md
+
+
+# GCP・クラウド関連
+service-account-key.json
+gcp-credentials.json
+firebase-adminsdk*.json
+.gcloud/
+.firebase/
+
+# 一時ファイル・キャッシュ
+tmp/
+temp/
+.cache/
+.npm/
+.yarn/
